@@ -77,6 +77,15 @@ operating system. You can verify that this is the case by executing:
 <pre class="lisp">(executable-find &quot;sqlite3&quot;)
 </pre></div>
 
+<p>If you have <code>sqlite3</code> installed, and <code>executable-find</code> still reports <code>nil</code>, then
+it is likely that the path to the executable is not a member of the Emacs
+variable <code>exec-path</code>. You may rectify this by manually adding the path within
+your Emacs configuration:
+</p>
+<div class="lisp">
+<pre class="lisp">(add-to-list 'exec-path &quot;path/to/sqlite3&quot;)
+</pre></div>
+
 
 
 
