@@ -15,18 +15,18 @@ General Public License for more details.
 <!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>_ (Org-roam User Manual)</title>
+<title>The roam-ref protocol (Org-roam User Manual)</title>
 
-<meta name="description" content="_ (Org-roam User Manual)">
-<meta name="keywords" content="_ (Org-roam User Manual)">
+<meta name="description" content="The roam-ref protocol (Org-roam User Manual)">
+<meta name="keywords" content="The roam-ref protocol (Org-roam User Manual)">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
 <link href="index.html#Top" rel="start" title="Top">
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="Roam-Protocol.html#Roam-Protocol" rel="up" title="Roam Protocol">
-<link href="Installation-_00281_0029.html#Installation-_00281_0029" rel="next" title="Installation (1)">
-<link href="Roam-Protocol.html#Roam-Protocol" rel="prev" title="Roam Protocol">
+<link href="Daily-Notes.html#Daily-Notes" rel="next" title="Daily Notes">
+<link href="The-roam_002dfile-protocol.html#The-roam_002dfile-protocol" rel="prev" title="The roam-file protocol">
 <style type="text/css">
 <!--
 a.summary-letter {text-decoration: none}
@@ -60,17 +60,39 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<a name="g_t_005f"></a>
+<a name="The-roam_002dref-protocol"></a>
 <div class="header">
 <p>
-Next: <a href="Installation-_00281_0029.html#Installation-_00281_0029" accesskey="n" rel="next">Installation (1)</a>, Up: <a href="Roam-Protocol.html#Roam-Protocol" accesskey="u" rel="up">Roam Protocol</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Previous: <a href="The-roam_002dfile-protocol.html#The-roam_002dfile-protocol" accesskey="p" rel="prev">The roam-file protocol</a>, Up: <a href="Roam-Protocol.html#Roam-Protocol" accesskey="u" rel="up">Roam Protocol</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <hr>
-<a name="g_t_005f-_003aignore_003a"></a>
-<h3 class="section">13.1 _ :ignore:</h3>
+<a name="The-roam_002dref-protocol-1"></a>
+<h3 class="section">13.4 The roam-ref protocol</h3>
 
-<p>Org-roam extending <code>org-protocol</code> with 2 protocols: the <code>roam-file</code>
-and <code>roam-ref</code> protocol.
+<p>This protocol finds or creates a new note with a given <code>roam_key</code> (see <a href="Anatomy-of-an-Org_002droam-File.html#Anatomy-of-an-Org_002droam-File">Anatomy of an Org-roam File</a>):
+</p>
+<img src="images/roam-ref.gif" alt="images/roam-ref">
+
+<p>To use this, create the following <a href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklet</a> in your browser:
+</p>
+<div class="example">
+<pre class="example">javascript:location.href =
+'org-protocol://roam-ref?template=r&amp;ref='
++ encodeURIComponent(location.href)
++ '&amp;title='
++ encodeURIComponent(document.title)
+</pre></div>
+
+<p>or as a keybinding in <code>qutebrowser</code> in , using the <code>config.py</code> file (see
+<a href="https://github.com/qutebrowser/qutebrowser/blob/master/doc/help/configuring.asciidoc">Configuring qutebrowser</a>):
+</p>
+<div class="example">
+<pre class="example">config.bind(&quot;&lt;Ctrl-r&gt;&quot;, &quot;open javascript:location.href='org-protocol://roam-ref?template=r&amp;ref='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title)&quot;)
+</pre></div>
+
+<p>where <code>template</code> is the template key for a template in
+<code>org-roam-capture-ref-templates</code> (see <a href="The-Templating-System.html#The-Templating-System">The Templating System</a>). These templates
+should contain a <code>#+roam_key: ${ref}</code> in it.
 </p>
 
 

@@ -15,18 +15,18 @@ General Public License for more details.
 <!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>FAQ (Org-roam User Manual)</title>
+<title>Versioning Notes (Org-roam User Manual)</title>
 
-<meta name="description" content="FAQ (Org-roam User Manual)">
-<meta name="keywords" content="FAQ (Org-roam User Manual)">
+<meta name="description" content="Versioning Notes (Org-roam User Manual)">
+<meta name="keywords" content="Versioning Notes (Org-roam User Manual)">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
 <link href="index.html#Top" rel="start" title="Top">
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="index.html#Top" rel="up" title="Top">
-<link href="How-do-I-have-more-than-one-Org_002droam-directory_003f.html#How-do-I-have-more-than-one-Org_002droam-directory_003f" rel="next" title="How do I have more than one Org-roam directory?">
-<link href="Spaced-Repetition.html#Spaced-Repetition" rel="prev" title="Spaced Repetition">
+<link href="Ecosystem.html#Ecosystem" rel="up" title="Ecosystem">
+<link href="Full_002dtext-search-interface-with-Deft.html#Full_002dtext-search-interface-with-Deft" rel="next" title="Full-text search interface with Deft">
+<link href="Browsing-History-with-winner_002dmode.html#Browsing-History-with-winner_002dmode" rel="prev" title="Browsing History with winner-mode">
 <style type="text/css">
 <!--
 a.summary-letter {text-decoration: none}
@@ -60,22 +60,24 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<a name="FAQ"></a>
+<a name="Versioning-Notes"></a>
 <div class="header">
 <p>
-Previous: <a href="Appendix.html#Appendix" accesskey="p" rel="prev">Appendix</a>, Up: <a href="index.html#Top" accesskey="u" rel="up">Top</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Next: <a href="Full_002dtext-search-interface-with-Deft.html#Full_002dtext-search-interface-with-Deft" accesskey="n" rel="next">Full-text search interface with Deft</a>, Previous: <a href="Browsing-History-with-winner_002dmode.html#Browsing-History-with-winner_002dmode" accesskey="p" rel="prev">Browsing History with winner-mode</a>, Up: <a href="Ecosystem.html#Ecosystem" accesskey="u" rel="up">Ecosystem</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <hr>
-<a name="FAQ-1"></a>
-<h2 class="chapter">18 FAQ</h2>
+<a name="Versioning-Notes-1"></a>
+<h4 class="subsection">17.2.2 Versioning Notes</h4>
 
-<table class="menu" border="0" cellspacing="0">
-<tr><td align="left" valign="top">&bull; <a href="How-do-I-have-more-than-one-Org_002droam-directory_003f.html#How-do-I-have-more-than-one-Org_002droam-directory_003f" accesskey="1">How do I have more than one Org-roam directory?</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
-</td></tr>
-<tr><td align="left" valign="top">&bull; <a href="How-do-I-migrate-from-Roam-Research_003f.html#How-do-I-migrate-from-Roam-Research_003f" accesskey="2">How do I migrate from Roam Research?</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
-</td></tr>
-</table>
-
+<p>Since Org-roam notes are just plain text, it is trivial to track changes in your
+notes database using version control systems such as <a href="https://git-scm.com/">Git</a>. Simply initialize
+<code>org-roam-directory</code> as a Git repository, and commit your files at regular or
+appropriate intervals. <a href="https://magit.vc/">Magit</a> is a great interface to Git within Emacs.
+</p>
+<p>In addition, it may be useful to observe how a particular note has evolved, by
+looking at the file history. <a href="https://gitlab.com/pidu/git-timemachine">Git-timemachine</a> allows you to visit historic
+versions of a tracked Org-roam note.
+</p>
 
 
 

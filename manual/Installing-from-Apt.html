@@ -15,18 +15,18 @@ General Public License for more details.
 <!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>The roam-ref Protocol (Org-roam User Manual)</title>
+<title>Installing from Apt (Org-roam User Manual)</title>
 
-<meta name="description" content="The roam-ref Protocol (Org-roam User Manual)">
-<meta name="keywords" content="The roam-ref Protocol (Org-roam User Manual)">
+<meta name="description" content="Installing from Apt (Org-roam User Manual)">
+<meta name="keywords" content="Installing from Apt (Org-roam User Manual)">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
 <link href="index.html#Top" rel="start" title="Top">
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="Roam-Protocol.html#Roam-Protocol" rel="up" title="Roam Protocol">
-<link href="Daily-Notes.html#Daily-Notes" rel="next" title="Daily Notes">
-<link href="The-roam_002dfile-protocol.html#The-roam_002dfile-protocol" rel="prev" title="The roam-file protocol">
+<link href="Installation.html#Installation" rel="up" title="Installation">
+<link href="Installing-from-the-Git-Repository.html#Installing-from-the-Git-Repository" rel="next" title="Installing from the Git Repository">
+<link href="Installing-from-MELPA.html#Installing-from-MELPA" rel="prev" title="Installing from MELPA">
 <style type="text/css">
 <!--
 a.summary-letter {text-decoration: none}
@@ -60,39 +60,23 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<a name="The-roam_002dref-Protocol"></a>
+<a name="Installing-from-Apt"></a>
 <div class="header">
 <p>
-Previous: <a href="The-roam_002dfile-protocol.html#The-roam_002dfile-protocol" accesskey="p" rel="prev">The &lsquo;<samp>roam-file</samp>&rsquo; protocol</a>, Up: <a href="Roam-Protocol.html#Roam-Protocol" accesskey="u" rel="up">Roam Protocol</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Next: <a href="Installing-from-the-Git-Repository.html#Installing-from-the-Git-Repository" accesskey="n" rel="next">Installing from the Git Repository</a>, Previous: <a href="Installing-from-MELPA.html#Installing-from-MELPA" accesskey="p" rel="prev">Installing from MELPA</a>, Up: <a href="Installation.html#Installation" accesskey="u" rel="up">Installation</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <hr>
-<a name="The-roam_002dref-Protocol-1"></a>
-<h3 class="section">12.4 The &lsquo;<samp>roam-ref</samp>&rsquo; Protocol</h3>
+<a name="Installing-from-Apt-1"></a>
+<h3 class="section">4.2 Installing from Apt</h3>
 
-<p>This protocol finds or creates a new note with a given <code>roam_key</code> (see <a href="Anatomy-of-an-Org_002droam-File.html#Anatomy-of-an-Org_002droam-File">Anatomy of an Org-roam File</a>):
-</p>
-<img src="images/roam-ref.gif" alt="images/roam-ref">
-
-<p>To use this, create a Firefox bookmarklet as follows:
+<p>Users of Debian 11 or later or Ubuntu 20.10 or later can simply install Org-roam
+using Apt:
 </p>
 <div class="example">
-<pre class="example">javascript:location.href =
-'org-protocol://roam-ref?template=r&amp;ref='
-+ encodeURIComponent(location.href)
-+ '&amp;title='
-+ encodeURIComponent(document.title)
+<pre class="example">apt-get install elpa-org-roam
 </pre></div>
 
-<p>or as a keybinding in <code>qutebrowser</code> in , using the <code>config.py</code> file (see
-<a href="https://github.com/qutebrowser/qutebrowser/blob/master/doc/help/configuring.asciidoc">Configuring qutebrowser</a>):
-</p>
-<div class="example">
-<pre class="example">config.bind(&quot;&lt;Ctrl-r&gt;&quot;, &quot;spawn bash -c 'emacsclient \&quot;org-protocol://roam-ref?template=r&amp;ref={url:pretty}&amp;title={title}\&quot; '&quot;)
-</pre></div>
-
-<p>where <code>template</code> is the template key for a template in
-<code>org-roam-capture-ref-templates</code> (see <a href="The-Templating-System.html#The-Templating-System">The Templating System</a>). These templates
-should contain a <code>#+roam_key: ${ref}</code> in it.
+<p>Org-roam will then be autoloaded into Emacs.
 </p>
 
 
