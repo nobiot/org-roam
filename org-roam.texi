@@ -31,7 +31,7 @@ General Public License for more details.
 @finalout
 @titlepage
 @title Org-roam User Manual
-@subtitle for version 1.2.1
+@subtitle for version 1.2.2
 @author Jethro Kuan
 @page
 @vskip 0pt plus 1filll
@@ -46,7 +46,7 @@ General Public License for more details.
 
 @noindent
 
-This manual is for Org-roam version 1.2.1.
+This manual is for Org-roam version 1.2.2.
 
 @quotation
 Copyright (C) 2020-2020 Jethro Kuan <jethrokuan95@@gmail.com>
@@ -72,6 +72,7 @@ General Public License for more details.
 * Anatomy of an Org-roam File::
 * The Templating System::
 * Concepts and Configuration::
+* Inserting Links::
 * Navigating Around::
 * Encryption::
 * Graphing::
@@ -79,6 +80,7 @@ General Public License for more details.
 * Roam Protocol::
 * Daily Notes::
 * Diagnosing and Repairing Files::
+* Finding Unlinked References::
 * Performance Optimization::
 * Appendix::
 * FAQ::
@@ -108,8 +110,8 @@ Concepts and Configuration
 
 * Directories and Files::
 * The Org-roam Buffer::
-* Org-roam Links::
 * Org-roam Files::
+* Org-roam Faces::
 
 Navigating Around
 
@@ -150,6 +152,7 @@ FAQ
 
 * How do I have more than one Org-roam directory?::
 * How do I migrate from Roam Research?::
+* How do I create a note whose title already matches one of the candidates?::
 
 @end detailmenu
 @end menu
@@ -346,7 +349,80 @@ apt-get install elpa-org-roam
 Org-roam will then be autoloaded into Emacs.
 
 @node Installing from the Git Repository
-@section @strong{TODO} Installing from the Git Repository
+@section Installing from the Git Repository
+
+You may install Org-roam directly from the repository on @uref{https://github.com/org-roam/org-roam, GitHub} if you like. This will give you access to the latest version hours or days before it appears on MELPA, and months (or more) before it is added to the Debian or Ubuntu repositories. This will also give you access to various developmental branches that may be available. 
+
+Note, however, that development version, and especially any feature branches, may not always be in working order. You'll need to be prepared to do some debugging, or to manually roll-back to working versions, if you install from GitHub.
+
+Installing from GitHub requires that you clone the repository:
+
+@example
+git clone https://github.com/org-roam/org-roam.git /path/to/org/roam
+@end example
+
+where @code{./path/to/org/roam} is the location you will store your copy of the code.
+
+Next, you need to add this location to your load path, and @code{require} the Org-roam library. Add the following code to your @code{.emacs}:
+
+@lisp
+(add-to-list 'load-path "/path/to/org/roam")
+(require 'org-roam)
+@end lisp
+
+You now have Org-roam installed. However, you don't necessarily have the dependencies that it requires. These include:
+
+@itemize
+@item
+dash
+@item
+f
+@item
+s
+@item
+org
+@item
+emacsql
+@item
+emacsql-sqlite3
+@end itemize
+
+You can install this manually as well, or get the latest version from MELPA@. You may wish to use @uref{https://github.com/jwiegley/use-package, use-package}, @uref{https://github.com/raxod502/straight.el, straight.el}, or some other tool or tools to help manage this.
+
+If you would like to install the manual for access from Emacs' built-in Info system, you'll need to compile the .texi source file, and install it in an appropriate location.
+
+To compile the .texi source file, from a terminal navigate to the @code{/doc} subdirectory of the Org-roam repository, and run the following:
+
+@example
+make infodir=/path/to/my/info/files install-info
+@end example
+
+Where @code{/path/to/my/info/files} is the location where you keep info files. This target directory needs to be stored in the variable `Info-default-directory-list`. If you aren't using one of the default info locations, you can configure this with the following in your @code{.emacs} file:
+
+@lisp
+(require 'info)
+(add-to-list 'Info-default-directory-list
+         "/path/to/my/info/files")
+@end lisp
+
+You can also use one of the default locations, such as:
+
+@itemize
+@item
+@emph{usr/local/share/info}
+@item
+@emph{usr/share/info}
+@item
+@emph{usr/local/share/info}
+@end itemize
+
+If you do this, you'll need to make sure you have write-access to that location, or run the above @code{make} command as root.
+
+Now that the info file is ready, you need to add it to the corresponding @code{dir} file:
+
+@example
+install-info /path/to/my/info/files/org-roam.info /path/to/my/info/files/dir
+@end example
 
 @node Post-Installation Tasks
 @section Post-Installation Tasks
@@ -707,8 +783,8 @@ All of Org-roam's customization options can be viewed via
 @menu
 * Directories and Files::
 * The Org-roam Buffer::
-* Org-roam Links::
 * Org-roam Files::
+* Org-roam Faces::
 @end menu
 
 @node Directories and Files
@@ -768,16 +844,86 @@ Height of @code{org-roam-buffer}. Has an effect only if @code{org-roam-buffer-po
 @code{'top} or @code{'bottom}.
 
 @item
-User Option: org-roam-buffer-no-delete-other-windows
+User Option: org-roam-buffer-window-parameters
 
-The @code{no-delete-window} parameter for the org-roam buffer. Setting it to @code{'t} prevents the window from being deleted when calling @code{delete-other-windows}.
+Additional window parameters for the org-roam-buffer side window.
+
+For example one can prevent the window from being deleted when calling
+@code{delete-other-windows}, by setting it with the following:
+
+@code{(setq org-roam-buffer-window-parameters '((no-delete-other-windows . t)))}
 @end itemize
 
-@node Org-roam Links
-@section Org-roam Links
+@node Org-roam Files
+@section Org-roam Files
 
-Org-roam links are regular @code{file:} links in Org-mode. By default, links are
-inserted with the title as the link description with @code{org-roam-insert}.
+Org-roam files are created and prefilled using Org-roam's templating
+system. The templating system is customizable (see @ref{The Templating System}).
+
+@node Org-roam Faces
+@section Org-roam Faces
+
+Org-roam introduces several faces to distinguish links within the same buffer.
+These faces are enabled by default in Org-roam notes.
+
+@itemize
+@item
+User Option: org-roam-link-use-custom-faces
+
+When @code{t}, use custom faces only inside Org-roam notes.
+When @code{everywhere}, the custom face is applied additionally to non Org-roam notes.
+When @code{nil}, do not use Org-roam's custom faces.
+@end itemize
+
+The @code{org-roam-link} face is the face applied to links to other Org-roam files.
+This distinguishes internal links from external links (e.g. external web links).
+
+The @code{org-roam-link-current} face corresponds to links to the same file it is in.
+
+The @code{org-roam-link-invalid} face is applied to links that are broken. These are
+links to files or IDs that cannot be found.
+
+@node Inserting Links
+@chapter Inserting Links
+
+The preferred mode of linking is via @code{file} links to files, and @code{id} links for
+headlines. This maintains the strongest compatibility with Org-mode, ensuring
+that the links still function without Org-roam, and work well exporting to other
+backends.
+
+@code{file} links can be inserted via @code{org-roam-insert}. Links to headlines can be
+inserted by navigating to the desired headline and calling @code{org-store-link}.
+This will create an ID for the headline if it does not already exist, and
+populate the Org-roam database. The link can then be inserted via
+@code{org-insert-link}.
+
+An alternative mode of insertion is using Org-roam's @code{roam} links. Org-roam
+registers this link type, and interprets the path as follows:
+
+@table @asis
+@item @code{[[roam:title]]}
+links to an Org-roam file with title or alias ``title''
+@item @code{[[roam:*headline]]}
+links to the headline ``headline'' in the current Org-roam file
+@item @code{[[roam:title*headline]]}
+links to the headline ``headline'' in the Org-roam file with title or alias ``title''
+@end table
+
+@code{roam} links support auto-completion via @code{completion-at-point}: simply call
+@code{completion-at-point} within a roam link. Users of @code{company-mode} may want to
+prepend @code{company-capf} to the beginning of variable @code{company-backends}.
+
+To easily insert @code{roam} links, one may wish to use a package like @uref{https://github.com/emacsorphanage/key-chord/, key-chord}. In the following example, typing ``[['' will insert a stub @code{roam} link:
+
+@lisp
+(key-chord-define org-mode-map "[[" #'my/insert-roam-link)
+
+(defun my/insert-roam-link ()
+    "Inserts an Org-roam link."
+    (interactive)
+    (insert "[[roam:]]")
+    (backward-char 2))
+@end lisp
 
 @itemize
 @item
@@ -788,13 +934,22 @@ special indicators for Org-roam links. Defaults to @code{"%s"}.
 
 If your version of Org is at least @code{9.2}, consider styling the link differently,
 by customizing the @code{org-roam-link}, and @code{org-roam-link-current} faces.
+
+@item
+User Option: org-roam-completion-ignore-case
+
+When non-nil, the @code{roam} link completions are ignore case. For example,
+calling @code{completion-at-point} within @code{[[roam:fo]]} will present a completion
+for a file with title ``Foo''. Defaults to @code{t}.
+
+@item
+User Option: org-roam-link-auto-replace
+
+When non-nil, @code{roam} links will be replaced with @code{file} or @code{id} links when
+they are navigated to, and on file save, when a match is found. This is
+desirable to maintain compatibility with vanilla Org, but resolved links are
+harder to edit. Defaults to @code{t}.
 @end itemize
-
-@node Org-roam Files
-@section Org-roam Files
-
-Org-roam files are created and prefilled using Org-roam's templating
-system. The templating system is customizable (see @ref{The Templating System}).
 
 @node Navigating Around
 @chapter Navigating Around
@@ -1232,6 +1387,20 @@ checker, to perform autofixes for the errors. For each error detected,
 window displaying the error message, as well as the list of actions that can be
 taken provided in @code{:actions}.
 
+@node Finding Unlinked References
+@chapter Finding Unlinked References
+
+Unlinked references are occurrences of strings of text that exactly match the
+title or alias of an existing note in the Org-roam database. Org-roam provides
+facilities for discovering these unlinked references, so one may decide whether
+to convert them into links.
+
+To use this feature, simply call @code{M-x org-roam-unlinked-references} from within
+an Org-roam note. Org-roam uses @uref{https://github.com/BurntSushi/ripgrep, ripgrep}, specifically a clever PCRE regex to
+find occurrences of the title or aliases of the currently open note in all
+Org-roam files. This thus requires a version of ripgrep that is compiled with
+PCRE support.
+
 @node Performance Optimization
 @chapter Performance Optimization
 
@@ -1489,6 +1658,7 @@ files. Other alternatives include @uref{https://orgmode.org/worg/org-contrib/org
 @menu
 * How do I have more than one Org-roam directory?::
 * How do I migrate from Roam Research?::
+* How do I create a note whose title already matches one of the candidates?::
 @end menu
 
 @node How do I have more than one Org-roam directory?
@@ -1515,6 +1685,22 @@ file within that directory, at least once.
 @section How do I migrate from Roam Research?
 
 Fabio has produced a command-line tool that converts markdown files exported from Roam Research into Org-roam compatible markdown. More instructions are provided @uref{https://github.com/fabioberger/roam-migration, in the repository}.
+
+@node How do I create a note whose title already matches one of the candidates?
+@section How do I create a note whose title already matches one of the candidates?
+
+This situation arises when, for example, one would like to create a note titled
+``bar'' when ``barricade'' already exists.
+
+The solution is dependent on the mini-buffer completion framework in use. Here
+are the solutions:
+
+@table @asis
+@item Ivy
+call @code{ivy-immediate-done}, typically bound to @code{C-M-j}. Alternatively, set @code{ivy-use-selectable-prompt} to @code{t}, so that ``bar'' is now selectable.
+@item Helm
+Org-roam should provide a selectable ``[?] bar'' candidate at the top of the candidate list.
+@end table
 
 Emacs 28.0.50 (Org mode 9.4)
 @bye

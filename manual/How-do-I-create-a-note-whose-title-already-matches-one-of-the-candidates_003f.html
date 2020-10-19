@@ -15,18 +15,17 @@ General Public License for more details.
 <!-- Created by GNU Texinfo 6.5, http://www.gnu.org/software/texinfo/ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>How do I have more than one Org-roam directory? (Org-roam User Manual)</title>
+<title>How do I create a note whose title already matches one of the candidates? (Org-roam User Manual)</title>
 
-<meta name="description" content="How do I have more than one Org-roam directory? (Org-roam User Manual)">
-<meta name="keywords" content="How do I have more than one Org-roam directory? (Org-roam User Manual)">
+<meta name="description" content="How do I create a note whose title already matches one of the candidates? (Org-roam User Manual)">
+<meta name="keywords" content="How do I create a note whose title already matches one of the candidates? (Org-roam User Manual)">
 <meta name="resource-type" content="document">
 <meta name="distribution" content="global">
 <meta name="Generator" content="makeinfo">
 <link href="index.html#Top" rel="start" title="Top">
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="FAQ.html#FAQ" rel="up" title="FAQ">
-<link href="How-do-I-migrate-from-Roam-Research_003f.html#How-do-I-migrate-from-Roam-Research_003f" rel="next" title="How do I migrate from Roam Research?">
-<link href="FAQ.html#FAQ" rel="prev" title="FAQ">
+<link href="How-do-I-migrate-from-Roam-Research_003f.html#How-do-I-migrate-from-Roam-Research_003f" rel="prev" title="How do I migrate from Roam Research?">
 <style type="text/css">
 <!--
 a.summary-letter {text-decoration: none}
@@ -60,33 +59,32 @@ ul.no-bullet {list-style: none}
 </head>
 
 <body lang="en">
-<a name="How-do-I-have-more-than-one-Org_002droam-directory_003f"></a>
+<a name="How-do-I-create-a-note-whose-title-already-matches-one-of-the-candidates_003f"></a>
 <div class="header">
 <p>
-Next: <a href="How-do-I-migrate-from-Roam-Research_003f.html#How-do-I-migrate-from-Roam-Research_003f" accesskey="n" rel="next">How do I migrate from Roam Research?</a>, Up: <a href="FAQ.html#FAQ" accesskey="u" rel="up">FAQ</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
+Previous: <a href="How-do-I-migrate-from-Roam-Research_003f.html#How-do-I-migrate-from-Roam-Research_003f" accesskey="p" rel="prev">How do I migrate from Roam Research?</a>, Up: <a href="FAQ.html#FAQ" accesskey="u" rel="up">FAQ</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>]</p>
 </div>
 <hr>
-<a name="How-do-I-have-more-than-one-Org_002droam-directory_003f-1"></a>
-<h3 class="section">20.1 How do I have more than one Org-roam directory?</h3>
+<a name="How-do-I-create-a-note-whose-title-already-matches-one-of-the-candidates_003f-1"></a>
+<h3 class="section">20.3 How do I create a note whose title already matches one of the candidates?</h3>
 
-<p>Emacs supports directory-local variables, allowing the value of
-<code>org-roam-directory</code> to be different in different directories. It does this by
-checking for a file named <code>.dir-locals.el</code>.
+<p>This situation arises when, for example, one would like to create a note titled
+&ldquo;bar&rdquo; when &ldquo;barricade&rdquo; already exists.
 </p>
-<p>To add support for multiple directories, override the <code>org-roam-directory</code>
-variable using directory-local variables. This is what <code>.dir-locals.el</code> may
-contain:
+<p>The solution is dependent on the mini-buffer completion framework in use. Here
+are the solutions:
 </p>
-<div class="lisp">
-<pre class="lisp">((nil . ((org-roam-directory . &quot;.&quot;)
-         (org-roam-db-location . &quot;./org-roam.db&quot;))))
-</pre></div>
+<dl compact="compact">
+<dt>Ivy</dt>
+<dd><p>call <code>ivy-immediate-done</code>, typically bound to <code>C-M-j</code>. Alternatively, set <code>ivy-use-selectable-prompt</code> to <code>t</code>, so that &ldquo;bar&rdquo; is now selectable.
+</p></dd>
+<dt>Helm</dt>
+<dd><p>Org-roam should provide a selectable &ldquo;[?] bar&rdquo; candidate at the top of the candidate list.
+</p></dd>
+</dl>
 
-<p>All files within that directory will be treated as their own separate
-set of Org-roam files. Remember to run <code>org-roam-db-build-cache</code> from a
-file within that directory, at least once.
+<p>Emacs 28.0.50 (Org mode 9.4)
 </p>
-
 
 
 </body>

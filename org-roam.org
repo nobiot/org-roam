@@ -8,13 +8,13 @@
 #+texinfo_dir_category: Emacs
 #+texinfo_dir_title: Org-roam: (org-roam).
 #+texinfo_dir_desc: Rudimentary Roam Replica for Emacs.
-#+subtitle: for version 1.2.1
+#+subtitle: for version 1.2.2
 
 #+options: H:4 num:3 toc:2 creator:t
 #+property: header-args :eval never
 #+texinfo: @noindent
 
-This manual is for Org-roam version 1.2.1.
+This manual is for Org-roam version 1.2.2.
 
 #+BEGIN_QUOTE
 Copyright (C) 2020-2020 Jethro Kuan <jethrokuan95@gmail.com>
@@ -195,7 +195,67 @@ using Apt:
 
 Org-roam will then be autoloaded into Emacs.
 
-** TODO Installing from the Git Repository
+** Installing from the Git Repository
+
+You may install Org-roam directly from the repository on [[https://github.com/org-roam/org-roam][GitHub]] if you like. This will give you access to the latest version hours or days before it appears on MELPA, and months (or more) before it is added to the Debian or Ubuntu repositories. This will also give you access to various developmental branches that may be available. 
+
+Note, however, that development version, and especially any feature branches, may not always be in working order. You'll need to be prepared to do some debugging, or to manually roll-back to working versions, if you install from GitHub.
+
+Installing from GitHub requires that you clone the repository:
+
+#+begin_src bash
+git clone https://github.com/org-roam/org-roam.git /path/to/org/roam
+#+end_src
+
+where ~./path/to/org/roam~ is the location you will store your copy of the code.
+
+Next, you need to add this location to your load path, and ~require~ the Org-roam library. Add the following code to your ~.emacs~:
+
+#+begin_src elisp
+(add-to-list 'load-path "/path/to/org/roam")
+(require 'org-roam)
+#+end_src
+
+You now have Org-roam installed. However, you don't necessarily have the dependencies that it requires. These include:
+
+- dash
+- f
+- s
+- org
+- emacsql
+- emacsql-sqlite3
+
+You can install this manually as well, or get the latest version from MELPA. You may wish to use [[https://github.com/jwiegley/use-package][use-package]], [[https://github.com/raxod502/straight.el][straight.el]], or some other tool or tools to help manage this.
+
+If you would like to install the manual for access from Emacs' built-in Info system, you'll need to compile the .texi source file, and install it in an appropriate location.
+
+To compile the .texi source file, from a terminal navigate to the ~/doc~ subdirectory of the Org-roam repository, and run the following:
+
+#+begin_src bash
+make infodir=/path/to/my/info/files install-info
+#+end_src
+
+Where ~/path/to/my/info/files~ is the location where you keep info files. This target directory needs to be stored in the variable `Info-default-directory-list`. If you aren't using one of the default info locations, you can configure this with the following in your ~.emacs~ file:
+
+#+begin_src elisp
+(require 'info)
+(add-to-list 'Info-default-directory-list
+	     "/path/to/my/info/files")
+#+end_src
+
+You can also use one of the default locations, such as:
+
+- /usr/local/share/info/
+- /usr/share/info/
+- /usr/local/share/info/
+
+If you do this, you'll need to make sure you have write-access to that location, or run the above ~make~ command as root.
+
+Now that the info file is ready, you need to add it to the corresponding ~dir~ file:
+
+#+begin_src bash
+install-info /path/to/my/info/files/org-roam.info /path/to/my/info/files/dir
+#+end_src
 
 ** Post-Installation Tasks
 
@@ -540,14 +600,74 @@ The Org-roam buffer displays backlinks for the currently active Org-roam note.
   Height of ~org-roam-buffer~. Has an effect only if ~org-roam-buffer-position~ is
   ~'top~ or ~'bottom~.
 
-- User Option: org-roam-buffer-no-delete-other-windows
+- User Option: org-roam-buffer-window-parameters
 
-  The ~no-delete-window~ parameter for the org-roam buffer. Setting it to ~'t~ prevents the window from being deleted when calling ~delete-other-windows~.
+  Additional window parameters for the org-roam-buffer side window.
 
-** Org-roam Links
+  For example one can prevent the window from being deleted when calling
+  ~delete-other-windows~, by setting it with the following:
 
-Org-roam links are regular ~file:~ links in Org-mode. By default, links are
-inserted with the title as the link description with ~org-roam-insert~.
+  ~(setq org-roam-buffer-window-parameters '((no-delete-other-windows . t)))~
+  
+** Org-roam Files
+
+Org-roam files are created and prefilled using Org-roam's templating
+system. The templating system is customizable (see [[*The Templating System][The Templating System]]).
+
+** Org-roam Faces
+
+Org-roam introduces several faces to distinguish links within the same buffer.
+These faces are enabled by default in Org-roam notes.
+
+- User Option: org-roam-link-use-custom-faces
+
+  When ~t~, use custom faces only inside Org-roam notes.
+  When ~everywhere~, the custom face is applied additionally to non Org-roam notes.
+  When ~nil~, do not use Org-roam's custom faces.
+
+The ~org-roam-link~ face is the face applied to links to other Org-roam files.
+This distinguishes internal links from external links (e.g. external web links).
+
+The ~org-roam-link-current~ face corresponds to links to the same file it is in.
+
+The ~org-roam-link-invalid~ face is applied to links that are broken. These are
+links to files or IDs that cannot be found.
+
+* Inserting Links
+
+The preferred mode of linking is via ~file~ links to files, and ~id~ links for
+headlines. This maintains the strongest compatibility with Org-mode, ensuring
+that the links still function without Org-roam, and work well exporting to other
+backends.
+
+~file~ links can be inserted via ~org-roam-insert~. Links to headlines can be
+inserted by navigating to the desired headline and calling ~org-store-link~.
+This will create an ID for the headline if it does not already exist, and
+populate the Org-roam database. The link can then be inserted via
+~org-insert-link~.
+
+An alternative mode of insertion is using Org-roam's ~roam~ links. Org-roam
+registers this link type, and interprets the path as follows:
+
+- ~[[roam:title]]~ :: links to an Org-roam file with title or alias "title"
+- ~[[roam:*headline]]~ :: links to the headline "headline" in the current Org-roam file
+- ~[[roam:title*headline]]~ :: links to the headline "headline" in the Org-roam file with title or alias "title"
+
+~roam~ links support auto-completion via ~completion-at-point~: simply call
+~completion-at-point~ within a roam link. Users of ~company-mode~ may want to
+prepend ~company-capf~ to the beginning of variable ~company-backends~.
+
+To easily insert ~roam~ links, one may wish to use a package like [[https://github.com/emacsorphanage/key-chord/][key-chord]]. In the following example, typing "[[" will insert a stub ~roam~ link:
+
+#+BEGIN_SRC emacs-lisp
+(key-chord-define org-mode-map "[[" #'my/insert-roam-link)
+
+(defun my/insert-roam-link ()
+    "Inserts an Org-roam link."
+    (interactive)
+    (insert "[[roam:]]")
+    (backward-char 2))
+#+END_SRC
 
 - User Option: org-roam-link-title-format
 
@@ -557,13 +677,20 @@ inserted with the title as the link description with ~org-roam-insert~.
   If your version of Org is at least ~9.2~, consider styling the link differently,
   by customizing the ~org-roam-link~, and ~org-roam-link-current~ faces.
 
-** Org-roam Files
+- User Option: org-roam-completion-ignore-case
 
-Org-roam files are created and prefilled using Org-roam's templating
-system. The templating system is customizable (see [[*The Templating System][The Templating System]]).
+  When non-nil, the ~roam~ link completions are ignore case. For example,
+  calling ~completion-at-point~ within ~[[roam:fo]]~ will present a completion
+  for a file with title "Foo". Defaults to ~t~.
+
+- User Option: org-roam-link-auto-replace
+
+  When non-nil, ~roam~ links will be replaced with ~file~ or ~id~ links when
+  they are navigated to, and on file save, when a match is found. This is
+  desirable to maintain compatibility with vanilla Org, but resolved links are
+  harder to edit. Defaults to ~t~.
 
 * Navigating Around
-
 ** Index File
 
 As your collection grows, you might want to create an index where you keep links
@@ -919,6 +1046,20 @@ checker, to perform autofixes for the errors. For each error detected,
 ~org-roam-doctor~ will move the point to the current error, and pop-up a help
 window displaying the error message, as well as the list of actions that can be
 taken provided in ~:actions~.
+
+* Finding Unlinked References
+
+Unlinked references are occurrences of strings of text that exactly match the
+title or alias of an existing note in the Org-roam database. Org-roam provides
+facilities for discovering these unlinked references, so one may decide whether
+to convert them into links.
+
+To use this feature, simply call ~M-x org-roam-unlinked-references~ from within
+an Org-roam note. Org-roam uses [[https://github.com/BurntSushi/ripgrep][ripgrep]], specifically a clever PCRE regex to
+find occurrences of the title or aliases of the currently open note in all
+Org-roam files. This thus requires a version of ripgrep that is compiled with
+PCRE support.
+
 * Performance Optimization
 ** TODO Profiling Key Operations
 ** Garbage Collection
@@ -1166,6 +1307,17 @@ file within that directory, at least once.
 ** How do I migrate from Roam Research?
 
 Fabio has produced a command-line tool that converts markdown files exported from Roam Research into Org-roam compatible markdown. More instructions are provided [[https://github.com/fabioberger/roam-migration][in the repository]].
+
+** How do I create a note whose title already matches one of the candidates?
+
+This situation arises when, for example, one would like to create a note titled
+"bar" when "barricade" already exists.
+
+The solution is dependent on the mini-buffer completion framework in use. Here
+are the solutions:
+
+- Ivy :: call ~ivy-immediate-done~, typically bound to ~C-M-j~. Alternatively, set ~ivy-use-selectable-prompt~ to ~t~, so that "bar" is now selectable.
+- Helm :: Org-roam should provide a selectable "[?] bar" candidate at the top of the candidate list.
 
 # Local Variables:
 # eval: (require 'ol-info)
