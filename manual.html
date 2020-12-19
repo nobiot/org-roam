@@ -341,18 +341,22 @@ to further introduce features enabled by the Emacs ecosystem.
 <ul>
 <li> <strong>Privacy and Security:</strong> Keep your personal wiki entirely offline and in your
 control. Encrypt your notes with GPG.
+
 </li><li> <strong>Longevity of Plain Text:</strong> Unlike web solutions like Roam Research, the notes
 are first and foremost plain Org-mode files &ndash; Org-roam simply builds an
 auxiliary database to give the personal wiki superpowers. Having your notes
 in plain-text is crucial for the longevity of your wiki. Never have to worry
 about proprietary web solutions being taken down. The notes are still
 functional even if Org-roam ceases to exist.
+
 </li><li> <strong>Free and Open Source:</strong> Org-roam is free and open-source, which means that if
 you feel unhappy with any part of Org-roam, you may choose to extend Org-roam,
 or open a pull request.
+
 </li><li> <strong>Leverage the Org-mode ecosystem:</strong> Over the years, Emacs and Org-mode has
 developed into a mature system for plain-text organization. Building upon
 Org-mode already puts Org-roam light-years ahead of many other solutions.
+
 </li><li> <strong>Built on Emacs:</strong> Emacs is also a fantastic interface for editing text, and we
 can inherit many of the powerful text-navigation and editing packages
 available to Emacs.
@@ -616,10 +620,15 @@ dependencies that it requires. These include:
 </p>
 <ul>
 <li> dash
+
 </li><li> f
+
 </li><li> s
+
 </li><li> org
+
 </li><li> emacsql
+
 </li><li> emacsql-sqlite3
 </li></ul>
 
@@ -652,7 +661,9 @@ locations, you can configure this with the following in your <code>.emacs</code>
 </p>
 <ul>
 <li> <em>usr/local/share/info</em>
+
 </li><li> <em>usr/share/info</em>
+
 </li><li> <em>usr/local/share/info</em>
 </li></ul>
 
@@ -822,12 +833,14 @@ using the acronym &ldquo;WWII&rdquo;.
 variable <code>org-roam-title-sources</code>, to control how the titles are extracted. The
 title extraction methods supported are:
 </p>
-<ol>
+<ul>
 <li> <code>'title</code>: This extracts the title using the file <code>#+title</code> property
+
 </li><li> <code>'headline</code>: This extracts the title from the first headline in the Org file
+
 </li><li> <code>'alias</code>: This extracts a list of titles using the <code>#+roam_alias</code> property.
 The aliases are space-delimited, and can be multi-worded using quotes.
-</li></ol>
+</li></ul>
 
 <p>Take for example the following org file:
 </p>
@@ -865,28 +878,31 @@ Up: <a href="#File-Titles" accesskey="u" rel="up">File Titles</a> &nbsp; [<a hre
 all methods of title extraction return no results, the file-name is used as the
 note&rsquo;s title.
 </p>
-<ul>
-<li> User Option: org-roam-title-sources
-
+<dl>
+<dt><a name="index-org_002droam_002dtitle_002dsources"></a>User Option: <strong>org-roam-title-sources</strong></dt>
+<dd>
 <p>The list of sources from which to retrieve a note title.
 Each element in the list is either:
-</p>
-</li><li> a symbol &ndash; this symbol corresponds to a title retrieval function, which
+</p></dd></dl>
+
+<ul>
+<li> a symbol &ndash; this symbol corresponds to a title retrieval function, which
 returns the list of titles for the current buffer
-<ol>
+<ul>
 <li> a list of symbols &ndash; symbols in the list are treated as with (1). The
 return value of this list is the first symbol in the list returning a
 non-nil value.
-</li></ol>
+</li></ul>
 
 <p>The return results of the root list are concatenated.
 </p>
 <p>For example the setting: &rsquo;((title headline) alias) means the following:
 </p>
-<ol>
+<ul>
 <li> Return the &rsquo;title + &rsquo;alias, if the title of current buffer is non-empty;
+
 </li><li> Or return &rsquo;headline + &rsquo;alias otherwise.
-</li></ol>
+</li></ul>
 
 <p>The currently supported symbols are:
 </p>
@@ -942,9 +958,9 @@ Up: <a href="#File-Tags" accesskey="u" rel="up">File Tags</a> &nbsp; [<a href="#
 <p>Org-roam calls <code>org-roam--extract-tags</code> to extract tags from files. The variable
 <code>org-roam-tag-sources</code>, to control how tags are extracted.
 </p>
-<ul>
-<li> User Option: org-roam-tag-sources
-</li></ul>
+<dl>
+<dt><a name="index-org_002droam_002dtag_002dsources"></a>User Option: <strong>org-roam-tag-sources</strong></dt>
+</dl>
 
 <p>Sources to obtain tags from.
 </p>
@@ -1044,8 +1060,11 @@ include:
 </p>
 <ul>
 <li> Time of creation
+
 </li><li> File it was created from
+
 </li><li> Clipboard content
+
 </li><li> Any other data you may want to input manually
 </li></ul>
 
@@ -1089,27 +1108,34 @@ the default template, reproduced below.
      :unnarrowed t)
 </pre></div>
 
-<ol>
+<ul>
 <li> The template has short key <code>&quot;d&quot;</code>. If you have only one template, org-roam
 automatically chooses this template for you.
+
 </li><li> The template is given a description of <code>&quot;default&quot;</code>.
+
 </li><li> <code>plain</code> text is inserted. Other options include Org headings via
 <code>entry</code>.
+
 </li><li> <code>(function org-roam--capture-get-point)</code> should not be changed.
+
 </li><li> <code>&quot;%?&quot;</code> is the template inserted on each call to <code>org-roam-capture--capture</code>.
 This template means don&rsquo;t insert any content, but place the cursor here.
+
 </li><li> <code>:file-name</code> is the file-name template for a new note, if it doesn&rsquo;t yet
 exist. This creates a file at path that looks like
 <code>/path/to/org-roam-directory/20200213032037-foo.org</code>. This template also
 allows you to specify if you want the note to go into a subdirectory. For
 example, the template <code>private/${slug}</code> will create notes in
 <code>/path/to/org-roam-directory/private</code>.
+
 </li><li> <code>:head</code> contains the initial template to be inserted (once only), at
 the beginning of the file. Here, the title global attribute is
 inserted.
+
 </li><li> <code>:unnarrowed t</code> tells org-capture to show the contents for the whole
 file, rather than narrowing to just the entry.
-</li></ol>
+</li></ul>
 
 <p>Other options you may want to learn about include <code>:immediate-finish</code>.
 </p>
@@ -1196,24 +1222,28 @@ Next: <a href="#The-Org_002droam-Buffer" accesskey="n" rel="next">The Org-roam B
 
 <p>This section concerns the placement and creation of files.
 </p>
-<ul>
-<li> Variable: org-roam-directory
-
+<dl>
+<dt><a name="index-org_002droam_002ddirectory"></a>Variable: <strong>org-roam-directory</strong></dt>
+<dd>
 <p>This is the default path to Org-roam files. All Org files, at any level of
 nesting, are considered part of the Org-roam.
-</p>
-</li><li> Variable: org-roam-db-location
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddb_002dlocation"></a>Variable: <strong>org-roam-db-location</strong></dt>
+<dd>
 <p>Location of the Org-roam database. If this is non-nil, the Org-roam sqlite
 database is saved here.
 </p>
 <p>It is the user’s responsibility to set this correctly, especially when used
 with multiple Org-roam instances.
-</p>
-</li><li> Variable: org-roam-file-exclude-regexp
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dfile_002dexclude_002dregexp"></a>Variable: <strong>org-roam-file-exclude-regexp</strong></dt>
+<dd>
 <p>Files matching this regular expression are excluded from the Org-roam.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="The-Org_002droam-Buffer"></a>
@@ -1226,35 +1256,43 @@ Next: <a href="#Org_002droam-Files" accesskey="n" rel="next">Org-roam Files</a>,
 
 <p>The Org-roam buffer displays backlinks for the currently active Org-roam note.
 </p>
-<ul>
-<li> User Option: org-roam-buffer
-
+<dl>
+<dt><a name="index-org_002droam_002dbuffer"></a>User Option: <strong>org-roam-buffer</strong></dt>
+<dd>
 <p>The name of the org-roam buffer. Defaults to <code>*org-roam*</code>.
-</p>
-</li><li> User Option: org-roam-buffer-position
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dbuffer_002dposition"></a>User Option: <strong>org-roam-buffer-position</strong></dt>
+<dd>
 <p>The position of the Org-roam buffer side window. Valid values are <code>'left</code>,
 <code>'right</code>, <code>'top</code>, <code>'bottom</code>.
-</p>
-</li><li> User Option: org-roam-buffer-width
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dbuffer_002dwidth"></a>User Option: <strong>org-roam-buffer-width</strong></dt>
+<dd>
 <p>Width of <code>org-roam-buffer</code>. Has an effect only if <code>org-roam-buffer-position</code> is
 <code>'left</code> or <code>'right</code>.
-</p>
-</li><li> User Option: org-roam-buffer-height
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dbuffer_002dheight"></a>User Option: <strong>org-roam-buffer-height</strong></dt>
+<dd>
 <p>Height of <code>org-roam-buffer</code>. Has an effect only if <code>org-roam-buffer-position</code> is
 <code>'top</code> or <code>'bottom</code>.
-</p>
-</li><li> User Option: org-roam-buffer-window-parameters
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dbuffer_002dwindow_002dparameters"></a>User Option: <strong>org-roam-buffer-window-parameters</strong></dt>
+<dd>
 <p>Additional window parameters for the org-roam-buffer side window.
 </p>
 <p>For example one can prevent the window from being deleted when calling
 <code>delete-other-windows</code>, by setting it with the following:
 </p>
 <p><code>(setq org-roam-buffer-window-parameters '((no-delete-other-windows . t)))</code>
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Org_002droam-Files"></a>
@@ -1280,13 +1318,13 @@ Next: <a href="#The-Database" accesskey="n" rel="next">The Database</a>, Previou
 <p>Org-roam introduces several faces to distinguish links within the same buffer.
 These faces are enabled by default in Org-roam notes.
 </p>
-<ul>
-<li> User Option: org-roam-link-use-custom-faces
-
+<dl>
+<dt><a name="index-org_002droam_002dlink_002duse_002dcustom_002dfaces"></a>User Option: <strong>org-roam-link-use-custom-faces</strong></dt>
+<dd>
 <p>When <code>t</code>, use custom faces only inside Org-roam notes.
 When <code>everywhere</code>, the custom face is applied additionally to non Org-roam notes.
 When <code>nil</code>, do not use Org-roam&rsquo;s custom faces.
-</p></li></ul>
+</p></dd></dl>
 
 <p>The <code>org-roam-link</code> face is the face applied to links to other Org-roam files.
 This distinguishes internal links from external links (e.g. external web links).
@@ -1307,21 +1345,23 @@ Previous: <a href="#Org_002droam-Faces" accesskey="p" rel="prev">Org-roam Faces<
 
 <p>Org-roam is backed by a Sqlite database.
 </p>
-<ul>
-<li> User Option: org-roam-db-update-method
-
+<dl>
+<dt><a name="index-org_002droam_002ddb_002dupdate_002dmethod"></a>User Option: <strong>org-roam-db-update-method</strong></dt>
+<dd>
 <p>Method to update the Org-roam database.
 </p>
 <p><code>'immediate</code>: Update the database immediately upon file changes.
 </p>
 <p><code>'idle-timer</code>: Updates the database if dirty, if Emacs idles for
 <code>org-roam-db-update-idle-seconds</code>.
-</p>
-</li><li> User Option: org-roam-db-update-idle-seconds
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddb_002dupdate_002didle_002dseconds"></a>User Option: <strong>org-roam-db-update-idle-seconds</strong></dt>
+<dd>
 <p>Number of idle seconds before triggering an Org-roam database update. This is
 only valid if <code>org-roam-db-update-method</code> is <code>'idle-timer</code>.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Inserting-Links"></a>
@@ -1346,36 +1386,35 @@ populate the Org-roam database. The link can then be inserted via
 <p>An alternative mode of insertion is using Org-roam&rsquo;s <code>roam</code> links. Org-roam
 registers this link type, and interprets the path as follows:
 </p>
-<dl compact="compact">
-<dt><code>[[roam:title]]</code></dt>
-<dd><p>links to an Org-roam file with title or alias &ldquo;title&rdquo;
-</p></dd>
-<dt><code>[[roam:*headline]]</code></dt>
-<dd><p>links to the headline &ldquo;headline&rdquo; in the current
+<ul>
+<li> <code>[[roam:title]]</code>links to an Org-roam file with title or alias &ldquo;title&rdquo;
+
+</li><li> <code>[[roam:*headline]]</code>links to the headline &ldquo;headline&rdquo; in the current
 Org-roam file
-</p></dd>
-<dt><code>[[roam:title*headline]]</code></dt>
-<dd><p>links to the headline &ldquo;headline&rdquo; in the Org-roam
+
+</li><li> <code>[[roam:title*headline]]</code>links to the headline &ldquo;headline&rdquo; in the Org-roam
 file with title or alias &ldquo;title&rdquo;
-</p>
-</dd>
-<dd><p>User Option: org-roam-link-title-format
-</p>
+
+</li></ul>
+
+<dl>
+<dt><a name="index-org_002droam_002dlink_002dtitle_002dformat"></a>User Option: <strong>org-roam-link-title-format</strong></dt>
+<dd>
 <p>To distinguish between org-roam links and regular links, one may choose to use
 special indicators for Org-roam links. Defaults to <code>&quot;%s&quot;</code>.
 </p>
 <p>If your version of Org is at least <code>9.2</code>, consider styling the link differently,
 by customizing the <code>org-roam-link</code>, and <code>org-roam-link-current</code> faces.
-</p>
-</dd>
-<dd><p>User Option: org-roam-link-auto-replace
-</p>
+</p></dd></dl>
+
+<dl>
+<dt><a name="index-org_002droam_002dlink_002dauto_002dreplace"></a>User Option: <strong>org-roam-link-auto-replace</strong></dt>
+<dd>
 <p>When non-nil, <code>roam</code> links will be replaced with <code>file</code> or <code>id</code> links when
 they are navigated to, and on file save, when a match is found. This is
 desirable to maintain compatibility with vanilla Org, but resolved links are
 harder to edit. Defaults to <code>t</code>.
-</p></dd>
-</dl>
+</p></dd></dl>
 
 <hr>
 <a name="Completions"></a>
@@ -1390,17 +1429,19 @@ Next: <a href="#Navigating-Around" accesskey="n" rel="next">Navigating Around</a
 suggestions are implemented as separate functions. Org-roam installs all
 functions in <code>org-roam-completion-functions</code> to <code>completion-at-point-functions</code>.
 </p>
-<ul>
-<li> Variable: org-roam-completion-functions
-
+<dl>
+<dt><a name="index-org_002droam_002dcompletion_002dfunctions"></a>Variable: <strong>org-roam-completion-functions</strong></dt>
+<dd>
 <p>The list of functions to be used with <code>completion-at-point</code>.
-</p>
-</li><li> User Option: org-roam-completion-ignore-case
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dcompletion_002dignore_002dcase"></a>User Option: <strong>org-roam-completion-ignore-case</strong></dt>
+<dd>
 <p>When non-nil, the <code>roam</code> link completions are ignore case. For example,
 calling <code>completion-at-point</code> within <code>[[roam:fo]]</code> will present a completion
 for a file with title &ldquo;Foo&rdquo;. Defaults to <code>t</code>.
-</p></li></ul>
+</p></dd></dl>
 
 <p>To use the completions from Org-roam with <code>company-mode</code>, prepend <code>company-capf</code>
 to variable <code>company-backends</code>.
@@ -1427,20 +1468,24 @@ represents the cursor:
 </p>
 <ul>
 <li> <code>[[|]]</code>: completes for a file title
+
 </li><li> <code>[[roam:]]</code>: completes for a file title
+
 </li><li> <code>[[*|]]</code>: completes for a headline within this file
+
 </li><li> <code>[[foo*|]]</code>: completes a headline within the file with title &ldquo;foo&rdquo;
+
 </li><li> <code>[[roam:foo*|]]</code> completes a headline within the file with title &ldquo;foo&rdquo;
 </li></ul>
 
 <p>Completions account for the current input. For example, for <code>[[f|]]</code>, the
 completions (by default) only show for files with titles that start with &ldquo;f&rdquo;.
 </p>
-<ul>
-<li> Function: org-roam-link-complete-at-point
-
+<dl>
+<dt><a name="index-org_002droam_002dlink_002dcomplete_002dat_002dpoint"></a>Function: <strong>org-roam-link-complete-at-point</strong></dt>
+<dd>
 <p>Do appropriate completion for the link at point.
-</p></li></ul>
+</p></dd></dl>
 
 <table class="menu" border="0" cellspacing="0">
 <tr><td align="left" valign="top">&bull; <a href="#Link-Completions-Everywhere" accesskey="1">Link Completions Everywhere</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
@@ -1464,13 +1509,13 @@ performed with great care.
 <p>Setting <code>org-roam-completion-everywhere</code> to <code>t</code> will enable word-at-point
 completions.
 </p>
-<ul>
-<li> User Option: org-roam-completion-everywhere
-
+<dl>
+<dt><a name="index-org_002droam_002dcompletion_002deverywhere"></a>User Option: <strong>org-roam-completion-everywhere</strong></dt>
+<dd>
 <p>If non-nil, provide completions from the current word at point. That is, in
 the scenario <code>this is a sent|</code>, calling <code>completion-at-point</code> will show
 completions for titles that begin with &ldquo;sent&rdquo;.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Tag-Completion"></a>
@@ -1518,9 +1563,9 @@ to your main files.
 <p>In Org-roam, you can define the path to your index file by setting
 <code>org-roam-index-file</code>.
 </p>
-<ul>
-<li> Variable: org-roam-index-file
-
+<dl>
+<dt><a name="index-org_002droam_002dindex_002dfile"></a>Variable: <strong>org-roam-index-file</strong></dt>
+<dd>
 <p>Path to the Org-roam index file.
 </p>
 <p>The path can be a string or a function. If it is a string, it should be the
@@ -1528,11 +1573,13 @@ path (absolute or relative to <code>org-roam-directory</code>) to the index file
 is is a function, the function should return the path to the index file.
 Otherwise, the index is assumed to be a note in <code>org-roam-index</code> whose
 title is <code>&quot;Index&quot;</code>.
-</p>
-</li><li> Function: org-roam-find-index
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dfind_002dindex"></a>Function: <strong>org-roam-find-index</strong></dt>
+<dd>
 <p>Opens the Index file in the current <code>org-roam-directory</code>.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Encryption"></a>
@@ -1552,11 +1599,11 @@ decryption are handled automatically by EasyPG.
 updates if it requires reading the encrypted file. To reduce the number of
 password prompts, you may wish to cache the password.
 </p>
-<ul>
-<li> User Option: org-roam-encrypt-files
-
+<dl>
+<dt><a name="index-org_002droam_002dencrypt_002dfiles"></a>User Option: <strong>org-roam-encrypt-files</strong></dt>
+<dd>
 <p>Whether to encrypt new files. If true, create files with .org.gpg extension.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Graphing"></a>
@@ -1573,39 +1620,49 @@ notes. This is done by performing SQL queries and generating images using
 </p>
 <p>The entry point to graph creation is <code>org-roam-graph</code>.
 </p>
-<ul>
-<li> Function: org-roam-graph &amp; optional arg file node-query
-
+<dl>
+<dt><a name="index-org_002droam_002dgraph"></a>Function: <strong>org-roam-graph</strong> <em>&amp; optional arg file node-query</em></dt>
+<dd>
 <p>Build and possibly display a graph for FILE from NODE-QUERY.
 If FILE is nil, default to current buffer’s file name.
 ARG may be any of the following values:
 </p>
 <ul>
 <li> <code>nil</code>       show the graph.
+
 </li><li> <code>C-u</code>       show the graph for FILE.
+
 </li><li> <code>C-u N</code>     show the graph for FILE limiting nodes to N steps.
+
 </li><li> <code>C-u C-u</code>   build the graph.
+
 </li><li> <code>C-u -</code>     build the graph for FILE.
+
 </li><li> <code>C-u -N</code>    build the graph for FILE limiting nodes to N steps.
 </li></ul>
+</dd></dl>
 
-</li><li> User Option: org-roam-graph-executable
-
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dexecutable"></a>User Option: <strong>org-roam-graph-executable</strong></dt>
+<dd>
 <p>Path to the graphing executable (in this case, Graphviz). Set this if Org-roam
 is unable to find the Graphviz executable on your system.
 </p>
 <p>You may also choose to use <code>neato</code> in place of <code>dot</code>, which generates a more
 compact graph layout.
-</p>
-</li><li> User Option: org-roam-graph-viewer
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dviewer"></a>User Option: <strong>org-roam-graph-viewer</strong></dt>
+<dd>
 <p>Org-roam defaults to using Firefox (located on PATH) to view the SVG, but you
 may choose to set it to:
 </p>
-<ol>
+<ul>
 <li> A string, which is a path to the program used
+
 </li><li> a function accepting a single argument: the graph file path.
-</li></ol>
+</li></ul>
 
 <p><code>nil</code> uses <code>view-file</code> to view the graph.
 </p>
@@ -1618,7 +1675,7 @@ the second option to set the browser and network file path:
       (let ((org-roam-graph-viewer &quot;/mnt/c/Program Files/Mozilla Firefox/firefox.exe&quot;))
         (org-roam-graph--open (concat &quot;file://///wsl$/Ubuntu&quot; file)))))
 </pre></div>
-</li></ul>
+</dd></dl>
 
 <table class="menu" border="0" cellspacing="0">
 <tr><td align="left" valign="top">&bull; <a href="#Graph-Options" accesskey="1">Graph Options</a>:</td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
@@ -1640,27 +1697,33 @@ Next: <a href="#Excluding-Nodes-and-Edges" accesskey="n" rel="next">Excluding No
 supports some of them. See <a href="https://graphviz.gitlab.io/_pages/doc/info/attrs.html">https://graphviz.gitlab.io/_pages/doc/info/attrs.html</a>
 for customizable options.
 </p>
-<ul>
-<li> User Option: org-roam-graph-extra-config
-
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dextra_002dconfig"></a>User Option: <strong>org-roam-graph-extra-config</strong></dt>
+<dd>
 <p>Extra options passed to graphviz for the digraph (The &ldquo;G&rdquo; attributes).
 Example: <code>'~((&quot;rankdir&quot; . &quot;LR&quot;))</code>
-</p>
-</li><li> User Option: org-roam-graph-node-extra-config
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dnode_002dextra_002dconfig"></a>User Option: <strong>org-roam-graph-node-extra-config</strong></dt>
+<dd>
 <p>Extra options for nodes in the graphviz output (The &ldquo;N&rdquo; attributes).
 Example: <code>'((&quot;color&quot; . &quot;skyblue&quot;))</code>
-</p>
-</li><li> User Option: org-roam-graph-edge-extra-config
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dedge_002dextra_002dconfig"></a>User Option: <strong>org-roam-graph-edge-extra-config</strong></dt>
+<dd>
 <p>Extra options for edges in the graphviz output (The &ldquo;E&rdquo; attributes).
 Example: <code>'((&quot;dir&quot; . &quot;back&quot;))</code>
-</p>
-</li><li> User Option: org-roam-graph-edge-cites-extra-config
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dedge_002dcites_002dextra_002dconfig"></a>User Option: <strong>org-roam-graph-edge-cites-extra-config</strong></dt>
+<dd>
 <p>Extra options for citation edges in the graphviz output.
 Example: <code>'((&quot;color&quot; . &quot;red&quot;))</code>
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Excluding-Nodes-and-Edges"></a>
@@ -1673,9 +1736,9 @@ Previous: <a href="#Graph-Options" accesskey="p" rel="prev">Graph Options</a>, U
 
 <p>One may want to exclude certain files to declutter the graph.
 </p>
-<ul>
-<li> User Option: org-roam-graph-exclude-matcher
-
+<dl>
+<dt><a name="index-org_002droam_002dgraph_002dexclude_002dmatcher"></a>User Option: <strong>org-roam-graph-exclude-matcher</strong></dt>
+<dd>
 <p>Matcher for excluding nodes from the generated graph. Any nodes and links for
 file paths matching this string is excluded from the graph.
 </p>
@@ -1683,7 +1746,7 @@ file paths matching this string is excluded from the graph.
 </p>
 <p>If value is a list, all file paths matching any of the strings
 are excluded.
-</p></li></ul>
+</p></dd></dl>
 
 <div class="example">
 <pre class="example">(setq org-roam-graph-exclude-matcher '(&quot;private&quot; &quot;dailies&quot;))
@@ -1805,26 +1868,26 @@ make the new policy take effect.
 <p>For MacOS, one solution is to use <a href="https://github.com/sveinbjornt/Platypus">Platypus</a>. Here are the instructions for
 setting up with Platypus and Chrome:
 </p>
-<ol>
+<ul>
 <li> Install and launch Platypus (with <a href="https://brew.sh/">Homebrew</a>):
-</li></ol>
+</li></ul>
 
 <div class="example">
 <pre class="example">brew cask install platypus
 </pre></div>
 
-<ol>
+<ul>
 <li> Create a script <code>launch_emacs.sh</code>:
-</li></ol>
+</li></ul>
 
 <div class="example">
 <pre class="example">#!/usr/bin/env bash
 /usr/local/bin/emacsclient --no-wait $1
 </pre></div>
 
-<ol>
+<ul>
 <li> Create a Platypus app with the following settings:
-</li></ol>
+</li></ul>
 
 <table>
 <thead><tr><th>Setting</th><th>Value</th></tr></thead>
@@ -1971,15 +2034,17 @@ Next: <a href="#Capturing-and-finding-daily_002dnotes" accesskey="n" rel="next">
 
 <p>For <code>org-roam-dailies</code> to work, you need to define two variables:
 </p>
-<ul>
-<li> Variable: <code>org-roam-dailies-directory</code>
-
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002ddirectory"></a>Variable: <strong><code>org-roam-dailies-directory</code></strong></dt>
+<dd>
 <p>Path to daily-notes.
-</p>
-</li><li> Variable: <code>org-roam-dailies-capture-templates</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dcapture_002dtemplates"></a>Variable: <strong><code>org-roam-dailies-capture-templates</code></strong></dt>
+<dd>
 <p>Capture templates for daily-notes in Org-roam.
-</p></li></ul>
+</p></dd></dl>
 
 <p>Here is a sane default configuration:
 </p>
@@ -2032,50 +2097,56 @@ Next: <a href="#Navigation" accesskey="n" rel="next">Navigation</a>, Previous: <
 <a name="Capturing-and-finding-daily_002dnotes-1"></a>
 <h3 class="section">16.2 Capturing and finding daily-notes</h3>
 
-<ul>
-<li> Function: <code>org-roam-dailies-capture-today</code> &amp;optional goto
-
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dcapture_002dtoday"></a>Function: <strong><code>org-roam-dailies-capture-today</code></strong> <em>&amp;optional goto</em></dt>
+<dd>
 <p>Create an entry in the daily note for today.
 </p>
 <p>When <code>goto</code> is non-nil, go the note without creating an entry.
-</p>
-</li><li> Function: <code>org-roam-dailies-find-today</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002dtoday"></a>Function: <strong><code>org-roam-dailies-find-today</code></strong></dt>
+<dd>
 <p>Find the daily note for today, creating it if necessary.
-</p></li></ul>
+</p></dd></dl>
 
 <p>There are variants of those commands for <code>-yesterday</code> and <code>-tomorrow</code>:
 </p>
-<ul>
-<li> Function: <code>org-roam-dailies-capture-yesterday</code> n &amp;optional goto
-
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dcapture_002dyesterday"></a>Function: <strong><code>org-roam-dailies-capture-yesterday</code></strong> <em>n &amp;optional goto</em></dt>
+<dd>
 <p>Create an entry in the daily note for yesteday.
 </p>
 <p>With numeric argument <code>n</code>, use the daily note <code>n</code> days in the past.
-</p>
-</li><li> Function: <code>org-roam-dailies-find-yesterday</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002dyesterday"></a>Function: <strong><code>org-roam-dailies-find-yesterday</code></strong></dt>
+<dd>
 <p>With numeric argument N, use the daily-note N days in the future.
-</p></li></ul>
+</p></dd></dl>
 
 <p>There are also commands which allow you to use Emacs’s <code>calendar</code> to find the date
 </p>
-<ul>
-<li> Function: <code>org-roam-dailies-capture-date</code>
-
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dcapture_002ddate"></a>Function: <strong><code>org-roam-dailies-capture-date</code></strong></dt>
+<dd>
 <p>Create an entry in the daily note for a date using the calendar.
 </p>
 <p>Prefer past dates, unless <code>prefer-future</code> is non-nil.
 </p>
 <p>With a &rsquo;C-u&rsquo; prefix or when <code>goto</code> is non-nil, go the note without
 creating an entry.
-</p>
-</li><li> Function: <code>org-roam-dailies-find-date</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002ddate"></a>Function: <strong><code>org-roam-dailies-find-date</code></strong></dt>
+<dd>
 <p>Find the daily note for a date using the calendar, creating it if necessary.
 </p>
 <p>Prefer past dates, unless <code>prefer-future</code> is non-nil.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Navigation"></a>
@@ -2088,19 +2159,23 @@ Previous: <a href="#Capturing-and-finding-daily_002dnotes" accesskey="p" rel="pr
 
 <p>You can navigate between daily-notes:
 </p>
-<ul>
-<li> Function: <code>org-roam-dailies-find-directory</code>
-
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002ddirectory"></a>Function: <strong><code>org-roam-dailies-find-directory</code></strong></dt>
+<dd>
 <p>Find and open <code>org-roam-dailies-directory</code>.
-</p>
-</li><li> Function: <code>org-roam-dailies-find-previous-note</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002dprevious_002dnote"></a>Function: <strong><code>org-roam-dailies-find-previous-note</code></strong></dt>
+<dd>
 <p>When in an daily-note, find the previous one.
-</p>
-</li><li> Function: <code>org-roam-dailies-find-next-note</code>
+</p></dd></dl>
 
+<dl>
+<dt><a name="index-org_002droam_002ddailies_002dfind_002dnext_002dnote"></a>Function: <strong><code>org-roam-dailies-find-next-note</code></strong></dt>
+<dd>
 <p>When in an daily-note, find the next one.
-</p></li></ul>
+</p></dd></dl>
 
 <hr>
 <a name="Diagnosing-and-Repairing-Files"></a>
@@ -2116,12 +2191,12 @@ Next: <a href="#Finding-Unlinked-References" accesskey="n" rel="next">Finding Un
 Org-roam file. To run the check only for all Org-roam files, run <code>C-u M-x
 org-roam-doctor</code>, but note that this may take some time.
 </p>
-<ul>
-<li> Function: org-roam-doctor &amp;optional this-buffer
-
+<dl>
+<dt><a name="index-org_002droam_002ddoctor"></a>Function: <strong>org-roam-doctor</strong> <em>&amp;optional this-buffer</em></dt>
+<dd>
 <p>Perform a check on Org-roam files to ensure cleanliness. If THIS-BUFFER, run
 the check only for the current buffer.
-</p></li></ul>
+</p></dd></dl>
 
 <p>The checks run are defined in <code>org-roam-doctor--checkers</code>. By default, there are
 checkers for broken links and invalid &lsquo;<samp>#+roam_*</samp>&rsquo; properties.
@@ -2245,32 +2320,31 @@ Next: <a href="#Ecosystem" accesskey="n" rel="next">Ecosystem</a>, Up: <a href="
 <a name="Note_002dtaking-Workflows-1"></a>
 <h3 class="section">20.1 Note-taking Workflows</h3>
 
-<dl compact="compact">
-<dt>Books</dt>
-<dd><ul>
+<ul>
+<li> Books<ul>
 <li> <a href="https://www.goodreads.com/book/show/34507927-how-to-take-smart-notes">How To Take Smart Notes</a>
 </li></ul>
-</dd>
-<dt>Articles</dt>
-<dd><ul>
+
+</li><li> Articles<ul>
 <li> <a href="https://www.lesswrong.com/posts/NfdHG6oHBJ8Qxc26s/the-zettelkasten-method-1">The Zettelkasten Method - LessWrong 2.0</a>
+
 </li><li> <a href="https://reddit.com/r/RoamResearch/comments/eho7de/building_a_second_brain_in_roamand_why_you_might">Building a Second Brain in Roam&hellip;And Why You Might Want To : RoamResearch</a>
+
 </li><li> <a href="https://www.nateliason.com/blog/roam">Roam Research: Why I Love It and How I Use It - Nat Eliason</a>
+
 </li><li> <a href="https://twitter.com/adam_keesling/status/1196864424725774336?s=20">Adam Keesling&rsquo;s Twitter Thread</a>
+
 </li><li> <a href="https://blog.jethro.dev/posts/how_to_take_smart_notes_org/">How To Take Smart Notes With Org-mode · Jethro Kuan</a>
 </li></ul>
-</dd>
-<dt>Threads</dt>
-<dd><ul>
+
+</li><li> Threads<ul>
 <li> <a href="https://news.ycombinator.com/item?id=22473209">Ask HN: How to Take Good Notes</a>
 </li></ul>
-</dd>
-<dt>Videos</dt>
-<dd><ul>
+
+</li><li> Videos<ul>
 <li> <a href="https://www.youtube.com/watch?v=RvWic15iXjk">How to Use Roam to Outline a New Article in Under 20 Minutes</a>
 </li></ul>
-</dd>
-</dl>
+</li></ul>
 
 <hr>
 <a name="Ecosystem"></a>
@@ -2608,16 +2682,13 @@ Previous: <a href="#How-do-I-migrate-from-Roam-Research_003f" accesskey="p" rel=
 <p>The solution is dependent on the mini-buffer completion framework in use. Here
 are the solutions:
 </p>
-<dl compact="compact">
-<dt>Ivy</dt>
-<dd><p>call <code>ivy-immediate-done</code>, typically bound to <code>C-M-j</code>. Alternatively,
+<ul>
+<li> Ivycall <code>ivy-immediate-done</code>, typically bound to <code>C-M-j</code>. Alternatively,
 set <code>ivy-use-selectable-prompt</code> to <code>t</code>, so that &ldquo;bar&rdquo; is now selectable.
-</p></dd>
-<dt>Helm</dt>
-<dd><p>Org-roam should provide a selectable &ldquo;[?] bar&rdquo; candidate at the top of
+
+</li><li> HelmOrg-roam should provide a selectable &ldquo;[?] bar&rdquo; candidate at the top of
 the candidate list.
-</p></dd>
-</dl>
+</li></ul>
 
 <hr>
 <a name="Keystroke-Index"></a>
@@ -2648,6 +2719,31 @@ Next: <a href="#Variable-Index" accesskey="n" rel="next">Variable Index</a>, Pre
 <a name="Function-Index-1"></a>
 <h2 class="appendix">Appendix C Function Index</h2>
 
+<table><tr><th valign="top">Jump to: &nbsp; </th><td><a class="summary-letter" href="#Function-Index_fn_letter-O"><b>O</b></a>
+ &nbsp; 
+</td></tr></table>
+<table class="index-fn" border="0">
+<tr><td></td><th align="left">Index Entry</th><td>&nbsp;</td><th align="left"> Section</th></tr>
+<tr><td colspan="4"> <hr></td></tr>
+<tr><th><a name="Function-Index_fn_letter-O">O</a></th><td></td><td></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dcapture_002ddate"><code><code>org-roam-dailies-capture-date</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dcapture_002dtoday"><code><code>org-roam-dailies-capture-today</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dcapture_002dyesterday"><code><code>org-roam-dailies-capture-yesterday</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002ddate"><code><code>org-roam-dailies-find-date</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002ddirectory"><code><code>org-roam-dailies-find-directory</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Navigation">Navigation</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002dnext_002dnote"><code><code>org-roam-dailies-find-next-note</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Navigation">Navigation</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002dprevious_002dnote"><code><code>org-roam-dailies-find-previous-note</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Navigation">Navigation</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002dtoday"><code><code>org-roam-dailies-find-today</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dfind_002dyesterday"><code><code>org-roam-dailies-find-yesterday</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Capturing-and-finding-daily_002dnotes">Capturing and finding daily-notes</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddoctor"><code>org-roam-doctor</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Diagnosing-and-Repairing-Files">Diagnosing and Repairing Files</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dfind_002dindex"><code>org-roam-find-index</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Index-File">Index File</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph"><code>org-roam-graph</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graphing">Graphing</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dlink_002dcomplete_002dat_002dpoint"><code>org-roam-link-complete-at-point</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Link-Completion">Link Completion</a></td></tr>
+<tr><td colspan="4"> <hr></td></tr>
+</table>
+<table><tr><th valign="top">Jump to: &nbsp; </th><td><a class="summary-letter" href="#Function-Index_fn_letter-O"><b>O</b></a>
+ &nbsp; 
+</td></tr></table>
 
 <hr>
 <a name="Variable-Index"></a>
@@ -2658,8 +2754,49 @@ Previous: <a href="#Function-Index" accesskey="p" rel="prev">Function Index</a>,
 <a name="Variable-Index-1"></a>
 <h2 class="appendix">Appendix D Variable Index</h2>
 
+<table><tr><th valign="top">Jump to: &nbsp; </th><td><a class="summary-letter" href="#Variable-Index_vr_letter-O"><b>O</b></a>
+ &nbsp; 
+</td></tr></table>
+<table class="index-vr" border="0">
+<tr><td></td><th align="left">Index Entry</th><td>&nbsp;</td><th align="left"> Section</th></tr>
+<tr><td colspan="4"> <hr></td></tr>
+<tr><th><a name="Variable-Index_vr_letter-O">O</a></th><td></td><td></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dbuffer"><code>org-roam-buffer</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Org_002droam-Buffer">The Org-roam Buffer</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dbuffer_002dheight"><code>org-roam-buffer-height</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Org_002droam-Buffer">The Org-roam Buffer</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dbuffer_002dposition"><code>org-roam-buffer-position</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Org_002droam-Buffer">The Org-roam Buffer</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dbuffer_002dwidth"><code>org-roam-buffer-width</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Org_002droam-Buffer">The Org-roam Buffer</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dbuffer_002dwindow_002dparameters"><code>org-roam-buffer-window-parameters</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Org_002droam-Buffer">The Org-roam Buffer</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dcompletion_002deverywhere"><code>org-roam-completion-everywhere</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Link-Completions-Everywhere">Link Completions Everywhere</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dcompletion_002dfunctions"><code>org-roam-completion-functions</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Completions">Completions</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dcompletion_002dignore_002dcase"><code>org-roam-completion-ignore-case</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Completions">Completions</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dcapture_002dtemplates"><code><code>org-roam-dailies-capture-templates</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Configuration">Configuration</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002ddirectory"><code><code>org-roam-dailies-directory</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Configuration">Configuration</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dlocation"><code>org-roam-db-location</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Directories-and-Files">Directories and Files</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dupdate_002didle_002dseconds"><code>org-roam-db-update-idle-seconds</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Database">The Database</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dupdate_002dmethod"><code>org-roam-db-update-method</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#The-Database">The Database</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddirectory"><code>org-roam-directory</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Directories-and-Files">Directories and Files</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dencrypt_002dfiles"><code>org-roam-encrypt-files</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Encryption">Encryption</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dfile_002dexclude_002dregexp"><code>org-roam-file-exclude-regexp</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Directories-and-Files">Directories and Files</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dedge_002dcites_002dextra_002dconfig"><code>org-roam-graph-edge-cites-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dedge_002dextra_002dconfig"><code>org-roam-graph-edge-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dexclude_002dmatcher"><code>org-roam-graph-exclude-matcher</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Excluding-Nodes-and-Edges">Excluding Nodes and Edges</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dexecutable"><code>org-roam-graph-executable</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graphing">Graphing</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dextra_002dconfig"><code>org-roam-graph-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dnode_002dextra_002dconfig"><code>org-roam-graph-node-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dviewer"><code>org-roam-graph-viewer</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graphing">Graphing</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dindex_002dfile"><code>org-roam-index-file</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Index-File">Index File</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dlink_002dauto_002dreplace"><code>org-roam-link-auto-replace</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Inserting-Links">Inserting Links</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dlink_002dtitle_002dformat"><code>org-roam-link-title-format</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Inserting-Links">Inserting Links</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dlink_002duse_002dcustom_002dfaces"><code>org-roam-link-use-custom-faces</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Org_002droam-Faces">Org-roam Faces</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dtag_002dsources"><code>org-roam-tag-sources</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Customizing-Tag-Extraction">Customizing Tag Extraction</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dtitle_002dsources"><code>org-roam-title-sources</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Customizing-Title-Extraction">Customizing Title Extraction</a></td></tr>
+<tr><td colspan="4"> <hr></td></tr>
+</table>
+<table><tr><th valign="top">Jump to: &nbsp; </th><td><a class="summary-letter" href="#Variable-Index_vr_letter-O"><b>O</b></a>
+ &nbsp; 
+</td></tr></table>
 
-<p>Emacs 27.1 (Org mode 9.3)
+<p>Emacs 28.0.50 (Org mode 9.5)
 </p><div class="footnote">
 <hr>
 <h4 class="footnotes-heading">Footnotes</h4>
