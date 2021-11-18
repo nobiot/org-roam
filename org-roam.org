@@ -8,13 +8,13 @@
 #+texinfo_dir_category: Emacs
 #+texinfo_dir_title: Org-roam: (org-roam).
 #+texinfo_dir_desc: Roam Research for Emacs.
-#+subtitle: for version 2.0.0
+#+subtitle: for version 2.1.0
 
 #+options: H:4 num:3 toc:nil creator:t ':t
 #+property: header-args :eval never
 #+texinfo: @noindent
 
-This manual is for Org-roam version 2.0.0.
+This manual is for Org-roam version 2.1.0.
 
 #+BEGIN_QUOTE
 Copyright (C) 2020-2021 Jethro Kuan <jethrokuan95@gmail.com>
@@ -67,7 +67,7 @@ Org-roam provides these benefits over other tooling:
 
 Org-roam is a tool that will appear unfriendly to anyone unfamiliar with Emacs
 and Org-mode, but it is also extremely powerful to those willing to put effort
-inn mastering the intricacies. Org-roam stands on the shoulders of giants. Emacs
+in mastering the intricacies. Org-roam stands on the shoulders of giants. Emacs
 was first created in 1976, and remains the tool of choice for many for editing
 text and designing textual interfaces. The malleability of Emacs allowed the
 creation of Org-mode, an all-purpose plain-text system for maintaining TODO
@@ -134,7 +134,7 @@ A slip-box requires a method for quickly capturing ideas. These are called
 *fleeting notes*: they are simple reminders of information or ideas that will
 need to be processed later on, or trashed. This is typically accomplished using
 ~org-capture~ (see info:org#Capture), or using Org-roam's daily notes
-functionality (see [[id:4eae8552-95e1-4e4a-b7b7-2c53433730ea][Org-roam Dailies]]). This provides a central inbox for collecting
+functionality (see [[*Org-roam Dailies][Org-roam Dailies]]). This provides a central inbox for collecting
 thoughts, to be processed later into permanent notes.
 
 *Permanent notes*
@@ -197,17 +197,6 @@ using:
 #+BEGIN_EXAMPLE
   M-x package-install RET org-roam RET
 #+END_EXAMPLE
-
-** Installing from Apt
-
-Users of Debian 11 or later or Ubuntu 20.10 or later can simply install Org-roam
-using Apt:
-
-#+BEGIN_SRC bash
-  apt-get install elpa-org-roam
-#+END_SRC
-
-Org-roam will then be autoloaded into Emacs.
 
 ** Installing from Source
 
@@ -311,7 +300,7 @@ is to use [[https://www.msys2.org/][MSYS2]] as at the time of this writing:
 1. Use the installer in the official website and install MSYS2
 2. Run MSYS2
 3. In the command-line tool, type the following and answer "Y" to proceed:
-   
+
    #+BEGIN_SRC bash
      pacman -S gcc
    #+END_SRC
@@ -319,7 +308,7 @@ is to use [[https://www.msys2.org/][MSYS2]] as at the time of this writing:
    Note that you do not need to manually set the PATH for MSYS2; the
 installer automatically takes care of it for you.
 
-4. Open Emacs and call ~M-x org-roam-setup~
+4. Open Emacs and call ~M-x org-roam-db-autosync-mode~
 
    This will automatically start compiling ~emacsql-sqlite~; you should see a
 message in minibuffer. It may take a while until compilation completes. Once
@@ -387,45 +376,19 @@ The ~file-truename~ function is only necessary when you use symbolic links
 inside ~org-roam-directory~: Org-roam does not resolve symbolic links.
 
 Next, we setup Org-roam to run functions on file changes to maintain cache
-consistency. This is achieved by running ~M-x org-roam-setup~. To ensure that
-Org-roam is available on startup, place this in your Emacs configuration:
+consistency. This is achieved by running ~M-x org-roam-db-autosync-mode~. To
+ensure that Org-roam is available on startup, place this in your Emacs
+configuration:
 
 #+begin_src emacs-lisp
-  (require 'org-roam)
-  (org-roam-setup)
+(org-roam-db-autosync-mode)
 #+end_src
 
 To build the cache manually, run ~M-x org-roam-db-sync~. Cache builds may
 take a while the first time, but subsequent builds are often instantaneous
 because they only reprocess modified files.
 
-** Customizing Node Caching
-
-By default, all nodes (any headline or file with an ID) are cached by Org-roam.
-There are instances where you may want to have headlines with ID, but not have
-them cached by Org-roam.
-
-To exclude a headline from the Org-roam database, set the ~ROAM_EXCLUDE~
-property to a non-nil value. For example:
-
-#+begin_src org
-,* Foo
-  :PROPERTIES:
-  :ID:       foo
-  :ROAM_EXCLUDE: t
-  :END:
-#+end_src
-
-One can also set ~org-roam-db-node-include-function~. For example, to exclude
-all headlines with the ~ATTACH~ tag from the Org-roam database, one can set:
-
-#+begin_src org
-(setq org-roam-db-node-include-function
-      (lambda ()
-        (not (member "ATTACH" (org-get-tags)))))
-#+end_src
-
-** TODO Creating and Linking Nodes
+** Creating and Linking Nodes
 
 Org-roam makes it easy to create notes and link them together. There are 2 main
 functions for creating nodes:
@@ -452,25 +415,109 @@ node. If you instead entered a title that does not exist, you will once again be
 brought through the node creation process.
 
 One can also conveniently insert links via the completion-at-point functions
-Org-roam provides (see [[id:70083bfd-d1e3-42b9-bf83-5b05708791c0][Completion]]).
+Org-roam provides (see [[*Completion][Completion]]).
+
+* Customizing Node Caching
+** How to cache
+
+Org-roam uses a sqlite database to perform caching, but there are multiple Emacs
+libraries that can be used. The default used by Org-roam is ~emacs-sqlite~.
+Below the pros and cons of each package is used:
+
+[[https://github.com/skeeto/emacsql][**emacs-sqlite**]]
+
+The default option used by Org-roam. This library is the most mature and
+well-supported and is imported by default in Org-roam.
+
+One downside of using ~emacs-sqlite~ is that using it requires compilation and
+can cause issues in some environments (especially Windows). If you have issues
+producing the customized binary required by ~emacs-sqlite~, consider using
+~emacs-sqlite3~.
+
+[[https://github.com/cireu/emacsql-sqlite3][**emacs-sqlite3**]]
+
+~emacs-sqlite3~ uses the official sqlite3 binary that can be obtained from your
+system's package manager. This is useful if you have issues producing the
+~sqlite3~ binary required by the other packages. However, it is not recommended
+because it has some compatibility issues with Emacs, but should work for most
+regular cases. See [[https://nullprogram.com/blog/2014/02/06/][Chris Wellon's blog post]] for more information.
+
+To use ~emacsql-sqlite3~, ensure that the package is installed, and set:
+
+#+begin_src emacs-lisp
+  (setq org-roam-database-connector 'sqlite3)
+#+end_src
+
+[[https://github.com/emacscollective/emacsql-libsqlite3/][**emacsql-libsqlite3**]]
+
+~emacs-libsqlite3~ is a relatively young package which uses an Emacs module that
+exposes parts of the SQLite C API to Emacs Lisp, instead of using subprocess as
+~emacsql-sqlite~ does. It is expected to be a more performant drop-in
+replacement for ~emacs-sqlite~.
+
+At the moment it is experimental and does not work well with the SQL query load
+required by Org-roam, but you may still try it by ensuring the package is
+installed and setting:
+
+#+begin_src emacs-lisp
+  (setq org-roam-database-connector 'libsqlite3)
+#+end_src
+
+** What to cache
+
+By default, all nodes (any headline or file with an ID) are cached by Org-roam.
+There are instances where you may want to have headlines with ID, but not have
+them cached by Org-roam.
+
+To exclude a headline from the Org-roam database, set the ~ROAM_EXCLUDE~
+property to a non-nil value. For example:
+
+#+begin_src org
+,* Foo
+  :PROPERTIES:
+  :ID:       foo
+  :ROAM_EXCLUDE: t
+  :END:
+#+end_src
+
+One can also set ~org-roam-db-node-include-function~. For example, to exclude
+all headlines with the ~ATTACH~ tag from the Org-roam database, one can set:
+
+#+begin_src org
+(setq org-roam-db-node-include-function
+      (lambda ()
+        (not (member "ATTACH" (org-get-tags)))))
+#+end_src
+
+** When to cache
+
+By default, Org-roam is eager in caching: each time an Org-roam file is modified
+and saved, it updates the database for the corresponding file. This keeps the
+database up-to-date, causing the least surprise when using the interactive
+commands.
+
+However, depending on how large your Org files are, database updating can be a
+slow operation. You can disable the automatic updating of the database by
+setting ~org-roam-db-update-on-save~ to ~nil~.
+
+- Variable: org-roam-db-update-on-save
+
+If t, update the Org-roam database upon saving the file. Disable this if your
+files are large and updating the database is slow.
 
 * The Org-roam Buffer
 
 Org-roam provides the Org-roam buffer: an interface to view relationships with
 other notes (backlinks, reference links, unlinked references etc.). There are
-two main functions to use here:
+two main commands to use here:
 
-- ~org-roam-buffer~: Launch an Org-roam buffer for the current node at point.
 - ~org-roam-buffer-toggle~: Launch an Org-roam buffer that tracks the node
   currently at point. This means that the content of the buffer changes as the
   point is moved, if necessary.
-
-Use ~org-roam-buffer-toggle~ when you want wish for the Org-roam buffer to
-buffer, call ~M-x org-roam-buffer~.
-
-- Function: org-roam-buffer
-
-  Launch an Org-roam buffer for the current node at point.
+- ~org-roam-buffer-display-dedicated~: Launch an Org-roam buffer for a specific
+  node without visiting its file. Unlike ~org-roam-buffer-toggle~ you can have
+  multiple such buffers and their content won't be automatically replaced with a
+  new node at point.
 
 To bring up a buffer that tracks the current node at point, call ~M-x
 org-roam-buffer-toggle~.
@@ -479,6 +526,13 @@ org-roam-buffer-toggle~.
 
   Toggle display of the ~org-roam-buffer~.
 
+To bring up a buffer that's dedicated for a specific node, call ~M-x
+org-roam-buffer-display-dedicated~.
+
+- Function: org-roam-buffer-display-dedicated
+
+  Launch node dedicated Org-roam buffer without visiting the node itself.
+
 ** Navigating the Org-roam Buffer
 
 The Org-roam buffer uses ~magit-section~, making the typical ~magit-section~
@@ -486,10 +540,10 @@ keybindings available. Here are several of the more useful ones:
 
 - ~M-{N}~: ~magit-section-show-level-{N}-all~
 - ~n~: ~magit-section-forward~
--~<TAB>~: ~magit-section-toggle~
-- ~<RET>~: ~org-roam-visit-thing~
+- ~<TAB>~: ~magit-section-toggle~
+- ~<RET>~: ~org-roam-buffer-visit-thing~
 
-~org-roam-visit-thing~ is a placeholder command, that is replaced by
+~org-roam-buffer-visit-thing~ is a placeholder command, that is replaced by
 section-specific commands such as ~org-roam-node-visit~.
 
 ** Configuring what is displayed in the buffer
@@ -637,10 +691,50 @@ Org-roam also provides some functions to add or remove refs.
 
   Remove a ref from the node at point.
 
-* Completion
+* Citations
+
+Since version 9.5, Org has first-class support for citations. Org-roam supports
+the caching of both these in-built citations (of form ~[cite:@key]~) and [[https://github.com/jkitchin/org-ref][org-ref]]
+citations (of form cite:key).
+
+Org-roam attempts to load both the ~org-ref~ and ~org-cite~ package when
+indexing files, so no further setup from the user is required for citation
+support.
+
+** Using the Cached Information
+
+It is common to use take reference notes for academic papers. To designate the
+node to be the canonical node for the academic paper, we can use its unique
+citation key:
+
+#+begin_src org
+,* Probabilistic Robotics
 :PROPERTIES:
-:ID:       70083bfd-d1e3-42b9-bf83-5b05708791c0
+:ID:       51b7b82c-bbb4-4822-875a-ed548cffda10
+:ROAM_REFS: @thrun2005probabilistic
 :END:
+#+end_src
+
+for ~org-cite~, or:
+
+#+begin_src org
+,* Probabilistic Robotics
+:PROPERTIES:
+:ID:       51b7b82c-bbb4-4822-875a-ed548cffda10
+:ROAM_REFS: cite:thrun2005probabilistic
+:END:
+#+end_src
+
+for ~org-ref~.
+
+When another node has a citation for that key, we can see it using the
+~Reflinks~ section of the Org-roam buffer.
+
+Extension developers may be interested in retrieving the citations within their
+notes. This information can be found within the ~citation~ table of the Org-roam
+database.
+
+* Completion
 
 Completions for Org-roam are provided via ~completion-at-point~. Org-roam
 currently provides completions in two scenarios:
@@ -692,7 +786,7 @@ extension in your Org-roam capture templates. For example:
 
 #+begin_src emacs-lisp
 (setq org-roam-capture-templates '(("d" "default" plain "%?"
-     :if-new (file+head "${slug}.org.gpg"
+     :target (file+head "${slug}.org.gpg"
                         "#+title: ${title}\n")
      :unnarrowed t)))
 #+end_src
@@ -815,6 +909,29 @@ defaults write com.apple.LaunchServices/com.apple.launchservices.secure LSHandle
 
 Then restart your computer.
 
+**** Testing org-protocol
+
+To test that you have the handler setup and registered properly from the command
+line you can run:
+
+#+begin_src bash
+  open org-protocol://roam-ref\?template=r\&ref=test\&title=this
+#+end_src
+
+If you get an error similar too this or the wrong handler is run:
+
+#+begin_quote
+No application knows how to open URL org-protocol://roam-ref?template=r&ref=test&title=this (Error Domain=NSOSStatusErrorDomain Code=-10814 "kLSApplicationNotFoundErr: E.g. no application claims the file" UserInfo={_LSLine=1489, _LSFunction=runEvaluator}).
+
+#+end_quote
+
+You may need to manually register your handler, like this:
+
+#+begin_src bash
+/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -R  -f /Applications/OrgProtocolClient.app
+#+end_src
+
+Here is a link to the lsregister command that is really useful: https://eclecticlight.co/2019/03/25/lsregister-a-valuable-undocumented-command-for-launchservices/
 *** Windows
 For Windows, create a temporary ~org-protocol.reg~ file:
 
@@ -848,7 +965,7 @@ graph navigable.
 
 ** The roam-ref protocol
 
-This protocol finds or creates a new note with a given ~roam_key~:
+This protocol finds or creates a new note with a given ~ROAM_REFS~:
 
 [[file:images/roam-ref.gif]]
 
@@ -872,8 +989,7 @@ or as a keybinding in ~qutebrowser~ in , using the ~config.py~ file (see
 #+END_SRC
 
 where ~template~ is the template key for a template in
-~org-roam-capture-ref-templates~ (see [[*The Templating System][The Templating System]]). These templates
-should contain a ~#+roam_key: ${ref}~ in it.
+~org-roam-capture-ref-templates~ (see [[*The Templating System][The Templating System]]).
 
 * The Templating System
 
@@ -889,12 +1005,12 @@ will be no prompt for template selection.
 ** Template Walkthrough
 
 To demonstrate the additions made to org-capture templates. Here, we explain
-the default template, reproduced below. You will find some most of the elements
+the default template, reproduced below. You will find most of the elements
 of the template are similar to ~org-capture~ templates.
 
 #+BEGIN_SRC emacs-lisp
 (("d" "default" plain "%?"
-  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+  :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                      "#+title: ${title}\n")
   :unnarrowed t))
 #+END_SRC
@@ -908,8 +1024,12 @@ of the template are similar to ~org-capture~ templates.
    here.
 5. ~"%?"~ is the template inserted on each call to ~org-roam-capture-~.
    This template means don't insert any content, but place the cursor here.
-6. ~:if-new~ is a compulsory specification in the Org-roam capture template.
-   This indicates the location for the new node.
+6. ~:target~ is a compulsory specification in the Org-roam capture template. The
+   first element of the list indicates the type of the target, the second
+   element indicates the location of the captured node, and the rest of the
+   elements indicate prefilled template that will be inserted and the position
+   of the point will be adjusted for. The latter behavior varies from type to
+   type of the capture target.
 7. ~:unnarrowed t~ tells org-capture to show the contents for the whole file,
    rather than narrowing to just the entry. This is part of the Org-capture
    templates.
@@ -934,6 +1054,23 @@ strings. ~${foo}~'s substitution is performed as follows:
 3. Else look up ~org-roam-capture--info~ for ~foo~. This is an internal variable
    that is set before the capture process begins.
 4. If none of the above applies, read a string using ~completing-read~.
+   a. Org-roam also provides the ~${foo=default_val}~ syntax, where if a default
+      value is provided, will be the initial value for the ~foo~ key during
+      minibuffer completion.
+
+One can check the list of available keys for nodes by inspecting the
+~org-roam-node~ struct. At the time of writing, it is:
+
+#+begin_src emacs-lisp
+  (cl-defstruct (org-roam-node (:constructor org-roam-node-create)
+                               (:copier nil))
+    "A heading or top level file with an assigned ID property."
+    file file-hash file-atime file-mtime
+    id level point todo priority scheduled deadline title properties olp
+    tags aliases refs)
+#+end_src
+
+This makes ~${file}~, ~${file-hash}~ etc. all valid substitutions.
 
 * Graphing
 
@@ -970,10 +1107,10 @@ ARG may be any of the following values:
   2. a function accepting a single argument: the graph file path.
 
   ~nil~ uses ~view-file~ to view the graph.
-  
+
   If you are using WSL2 and would like to open the graph in Windows, you can use
   the second option to set the browser and network file path:
-  
+
   #+BEGIN_SRC emacs-lisp
   (setq org-roam-graph-viewer
       (lambda (file)
@@ -1008,9 +1145,6 @@ for customizable options.
   Example: ~'(("dir" . "back"))~
 
 * Org-roam Dailies
-:PROPERTIES:
-:ID:       4eae8552-95e1-4e4a-b7b7-2c53433730ea
-:END:
 
 Org-roam provides journaling capabilities akin to
 Org-journal with ~org-roam-dailies~.
@@ -1035,7 +1169,7 @@ Here is a sane default configuration:
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry
          "* %?"
-         :if-new (file+head "%<%Y-%m-%d>.org"
+         :target (file+head "%<%Y-%m-%d>.org"
                             "#+title: %<%Y-%m-%d>\n"))))
 #+end_src
 
@@ -1074,7 +1208,7 @@ There are also commands which allow you to use Emacs’s ~calendar~ to find the 
   Create an entry in the daily note for a date using the calendar.
 
   Prefer past dates, unless ~prefer-future~ is non-nil.
-  
+
   With a 'C-u' prefix or when ~goto~ is non-nil, go the note without
   creating an entry.
 
@@ -1226,7 +1360,7 @@ documents (PDF, EPUB etc.) within Org-mode.
 
 For example, though helm-bibtex provides the ability to visit notes for
 bibliographic entries, org-roam-bibtex extends it with the ability to visit the
-file with the right =#+ROAM_KEYS=.
+file with the right ~ROAM_REFS~.
 
 ** Spaced Repetition
 
@@ -1256,12 +1390,6 @@ All files within that directory will be treated as their own separate set of
 Org-roam files. Remember to run ~org-roam-db-sync~ from a file within
 that directory, at least once.
 
-** How do I migrate from Roam Research?
-
-Fabio has produced a command-line tool that converts markdown files exported
-from Roam Research into Org-roam compatible markdown. More instructions are
-provided [[https://github.com/fabioberger/roam-migration][in the repository]].
-
 ** How do I create a note whose title already matches one of the candidates?
 
 This situation arises when, for example, one would like to create a note titled
@@ -1274,27 +1402,41 @@ are the solutions:
   set ~ivy-use-selectable-prompt~ to ~t~, so that "bar" is now selectable.
 - Helm :: Org-roam should provide a selectable "[?] bar" candidate at the top of
   the candidate list.
+** How can I stop Org-roam from creating IDs everywhere?
 
-* Migrating from Org-roam v1
+Other than the interactive commands that Org-roam provides, Org-roam does not
+create IDs everywhere. If you are noticing that IDs are being created even when
+you don't want them to be (e.g. when tangling an Org file), check the value you
+have set for ~org-id-link-to-org-use-id~: setting it to ~'create-if-interactive~
+is a popular option.
+
+** How do I migrate from Roam Research?
+
+Fabio has produced a command-line tool that converts markdown files exported
+from Roam Research into Org-roam compatible markdown. More instructions are
+provided [[https://github.com/fabioberger/roam-migration][in the repository]].
+
+** How to migrate from Org-roam v1?
 
 Those coming from Org-roam v1 will do well treating v2 as entirely new software.
 V2 has a smaller core and fewer moving parts, while retaining the bulk of its
 functionality. It is recommended to read the documentation above about nodes.
 
-It is still desirable to migrate notes collected in v1 to v2. To migrate your v1
-notes to v2, you may use the migration script provided in [[https://gist.github.com/jethrokuan/02f41028fb4a6f81787dc420fb99b6e4][this gist]], or [[https://gist.github.com/jethrokuan/02f41028fb4a6f81787dc420fb99b6e4#gistcomment-3737019][this
-gist]], the latter being better tested. [[https://d12frosted.io/posts/2021-06-11-path-to-org-roam-v2.html][This blog post]] provides a good overview of
-what's new in v2 and how to migrate.
+It is still desirable to migrate notes collected in v1 to v2.
+To migrate your v1 notes to v2, use =M-x org-roam-migrate-wizard=.
+[[https://d12frosted.io/posts/2021-06-11-path-to-org-roam-v2.html][This blog post]]
+provides a good overview of what's new in v2 and how to migrate.
 
-Simply put, to migrate notes from v1 to v2, one must:
+Essentially, to migrate notes from v1 to v2, one must:
 
-1. Add IDs to all existing notes. These are located in top-level property
-   drawers (Although note that in v2, not all files need to have IDs)
+1. Add IDs to all existing notes.
+   These are located in top-level property drawers
+   (Although note that in v2, not all files need to have IDs).
 2. Update the Org-roam database to conform to the new schema.
 3. Replace ~#+ROAM_KEY~ into the ~ROAM_REFS~ property
 4. Replace ~#+ROAM_ALIAS~ into the ~ROAM_ALIASES~ property
-5. Move ~#+ROAM_TAGS~ into the ~#+FILETAGS~ property for file-level nodes, and
-   the ~ROAM_TAGS~ property for headline nodes
+5. Move ~#+ROAM_TAGS~ into the ~#+FILETAGS~ property for file-level nodes,
+   and the ~ROAM_TAGS~ property for headline nodes
 6. Replace existing file links with ID links.
 
 * Developer's Guide to Org-roam
@@ -1384,7 +1526,7 @@ method to access nodes is ~org-roam-node-at-point~ and ~org-roam-node-read~:
   is a function to filter out nodes: it takes a single argument (an
   ~org-roam-node~), and when nil is returned the node will be
   filtered out.
-  SORT-FN is a function to sort nodes. See ~org-roam-node-sort-by-file-mtime~
+  SORT-FN is a function to sort nodes. See ~org-roam-node-read-sort-by-file-mtime~
   for an example sort function.
   If REQUIRE-MATCH, the minibuffer prompt will require a match.
 
@@ -1416,7 +1558,7 @@ instead. The exposed function to be used in extensions is ~org-roam-capture-~:
 
   Main entry point.
   GOTO and KEYS correspond to `org-capture' arguments.
-  INFO is an alist for filling up Org-roam's capture templates.
+  INFO is a plist for filling up Org-roam's capture templates.
   NODE is an `org-roam-node' construct containing information about the node.
   PROPS is a plist containing additional Org-roam properties for each template.
   TEMPLATES is a list of org-roam templates.
@@ -1500,7 +1642,7 @@ see the list.
 paren and run =M-x eval-last-sexp RET= or 2) Press =C-c C-c= with your cursor in
 an Org file code block (like =#+BEGIN_SRC emacs-lisp=).
 [fn:roam] To understand more about Roam, a collection of links are available in [[*Note-taking Workflows][Note-taking Workflows]].
- 
+
 # Local Variables:
 # eval: (require 'ol-info)
 # eval: (require 'ox-texinfo+ nil t)
