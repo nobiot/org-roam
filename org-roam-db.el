@@ -243,8 +243,8 @@ The query is expected to be able to fail, in this situation, run HANDLER."
 
 (defun org-roam-db--init (db)
   "Initialize database DB with the correct schema and user version."
+  (emacsql db [:pragma (= foreign_keys ON)])
   (emacsql-with-transaction db
-    (emacsql db "PRAGMA foreign_keys = ON")
     (pcase-dolist (`(,table ,schema) org-roam-db--table-schemata)
       (emacsql db [:create-table $i1 $S2] table schema))
     (pcase-dolist (`(,index-name ,table ,columns) org-roam-db--table-indices)
@@ -338,12 +338,12 @@ If UPDATE-P is non-nil, first remove the file in the database."
 
 (defun org-roam-db-map-nodes (fns)
   "Run FNS over all nodes in the current buffer."
-  (org-with-point-at 1
-    (org-map-entries
-     (lambda ()
-       (when (org-roam-db-node-p)
-         (dolist (fn fns)
-           (funcall fn)))))))
+  (org-map-region
+   (lambda ()
+     (when (org-roam-db-node-p)
+       (dolist (fn fns)
+         (funcall fn))))
+   (point-min) (point-max)))
 
 (defun org-roam-db-map-links (fns)
   "Run FNS over all links in the current buffer."
