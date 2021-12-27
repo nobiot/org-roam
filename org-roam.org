@@ -711,6 +711,16 @@ citation key:
 :END:
 #+end_src
 
+or
+
+#+begin_src org
+,* Probabilistic Robotics
+:PROPERTIES:
+:ID:       51b7b82c-bbb4-4822-875a-ed548cffda10
+:ROAM_REFS: [cite:@thrun2005probabilistic]
+:END:
+#+end_src
+
 for ~org-cite~, or:
 
 #+begin_src org
@@ -1350,6 +1360,9 @@ journal entries from the ideas you would write on a scratchpad.
 documents (PDF, EPUB etc.) within Org-mode.
 
 ** Bibliography
+
+Org 9.5 added native citation and bibliography functionality, called "org-cite",
+which org-roam supports.
 
 [[https://github.com/org-roam/org-roam-bibtex][org-roam-bibtex]] offers tight integration between [[https://github.com/jkitchin/org-ref][org-ref]], [[https://github.com/tmalsburg/helm-bibtex][helm-bibtex]] and
 ~org-roam~. This helps you manage your bibliographic notes under ~org-roam~.
