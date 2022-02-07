@@ -60,7 +60,7 @@ Next: <a href="#Introduction" accesskey="n" rel="next">Introduction</a> &nbsp; [
 <span id="Org_002droam-User-Manual"></span><h1 class="top">Org-roam User Manual</h1>
 
 
-<p>This manual is for Org-roam version 2.1.0.
+<p>This manual is for Org-roam version 2.2.0.
 </p>
 <blockquote>
 <p>Copyright (C) 2020-2021 Jethro Kuan &lt;jethrokuan95@gmail.com&gt;
@@ -160,6 +160,8 @@ Getting Started
 <tr><td align="left" valign="top">&bull; <a href="#Setting-up-Org_002droam">Setting up Org-roam</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
 <tr><td align="left" valign="top">&bull; <a href="#Creating-and-Linking-Nodes">Creating and Linking Nodes</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Customizing-Node-Completions">Customizing Node Completions</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
 <tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
 
@@ -300,6 +302,8 @@ FAQ
 <tr><td align="left" valign="top">&bull; <a href="#How-to-migrate-from-Org_002droam-v1_003f">How to migrate from Org-roam v1?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
 <tr><td align="left" valign="top">&bull; <a href="#How-do-I-publish-my-notes-with-an-Internet_002dfriendly-graph_003f">How do I publish my notes with an Internet-friendly graph?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#I_0027m-seeing-this-_0060_0060Selecting-deleted-buffer_0027_0027-error-What-do-I-do_003f">I&rsquo;m seeing this &ldquo;Selecting deleted buffer&rdquo; error. What do I do?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
 <tr><th colspan="3" align="left" valign="top"><pre class="menu-comment">
 
@@ -735,6 +739,8 @@ Next: <a href="#Customizing-Node-Caching" accesskey="n" rel="next">Customizing N
 </td></tr>
 <tr><td align="left" valign="top">&bull; <a href="#Creating-and-Linking-Nodes" accesskey="4">Creating and Linking Nodes</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#Customizing-Node-Completions" accesskey="5">Customizing Node Completions</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
 </table>
 
 <hr>
@@ -811,8 +817,13 @@ for notes. This variable needs to be set before any calls to Org-roam functions.
 </pre></div>
 
 <p>The <code>file-truename</code> function is only necessary when you use symbolic links
-inside <code>org-roam-directory</code>: Org-roam does not resolve symbolic links.
+inside <code>org-roam-directory</code>: Org-roam does not resolve symbolic links. One can
+however instruct Emacs to always resolve symlinks, at a performance cost:
 </p>
+<div class="lisp">
+<pre class="lisp">(setq find-file-visit-truename t)
+</pre></div>
+
 <p>Next, we setup Org-roam to run functions on file changes to maintain cache
 consistency. This is achieved by running <code>M-x org-roam-db-autosync-mode</code>. To
 ensure that Org-roam is available on startup, place this in your Emacs
@@ -829,7 +840,7 @@ because they only reprocess modified files.
 <hr>
 <span id="Creating-and-Linking-Nodes"></span><div class="header">
 <p>
-Previous: <a href="#Setting-up-Org_002droam" accesskey="p" rel="prev">Setting up Org-roam</a>, Up: <a href="#Getting-Started" accesskey="u" rel="up">Getting Started</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
+Next: <a href="#Customizing-Node-Completions" accesskey="n" rel="next">Customizing Node Completions</a>, Previous: <a href="#Setting-up-Org_002droam" accesskey="p" rel="prev">Setting up Org-roam</a>, Up: <a href="#Getting-Started" accesskey="u" rel="up">Getting Started</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
 </div>
 <span id="Creating-and-Linking-Nodes-1"></span><h3 class="section">5.4 Creating and Linking Nodes</h3>
 
@@ -864,6 +875,61 @@ brought through the node creation process.
 <p>One can also conveniently insert links via the completion-at-point functions
 Org-roam provides (see <a href="#Completion">Completion</a>).
 </p>
+<hr>
+<span id="Customizing-Node-Completions"></span><div class="header">
+<p>
+Previous: <a href="#Creating-and-Linking-Nodes" accesskey="p" rel="prev">Creating and Linking Nodes</a>, Up: <a href="#Getting-Started" accesskey="u" rel="up">Getting Started</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<span id="Customizing-Node-Completions-1"></span><h3 class="section">5.5 Customizing Node Completions</h3>
+
+<p>Node selection is achieved via the <code>completing-read</code> interface, typically
+through &lsquo;org-roam-node-read&lsquo;. The presentation of these nodes are governed by
+<code>org-roam-node-display-template</code>.
+</p>
+<dl>
+<dt id="index-org_002droam_002dnode_002ddisplay_002dtemplate">Variable: <strong>org-roam-node-display-template</strong></dt>
+<dd>
+<p>Configures display formatting for Org-roam node.
+</p>
+<p>Patterns of form &ldquo;${field-name:length}&rdquo; are interpolated based
+on the current node.
+</p>
+<p>Each &ldquo;field-name&rdquo; is replaced with the return value of each
+corresponding accessor function for org-roam-node, e.g.
+&ldquo;${title}&rdquo; will be interpolated by the result of
+org-roam-node-title. You can also define custom accessors using
+cl-defmethod. For example, you can define:
+</p>
+<p>(cl-defmethod org-roam-node-my-title ((node org-roam-node))
+  (concat &ldquo;My &rdquo; (org-roam-node-title node)))
+</p>
+<p>and then reference it here or in the capture templates as
+&ldquo;${my-title}&rdquo;.
+</p>
+<p>&ldquo;length&rdquo; is an optional specifier and declares how many
+characters can be used to display the value of the corresponding
+field. If it&rsquo;s not specified, the field will be inserted as is,
+i.e. it won&rsquo;t be aligned nor trimmed. If it&rsquo;s an integer, the
+field will be aligned accordingly and all the exceeding
+characters will be trimmed out. If it&rsquo;s &ldquo;*&rdquo;, the field will use
+as many characters as possible and will be aligned accordingly.
+</p>
+<p>A closure can also be assigned to this variable in which case the
+closure is evaluated and the return value is used as the
+template. The closure must evaluate to a valid template string.
+</p></dd></dl>
+
+<p>If you&rsquo;re using a vertical completion framework, such as Ivy and Selectrum,
+Org-roam supports the generation of an aligned, tabular completion interface.
+For example, to include a column for tags up to 10 character widths wide, one
+can set <code>org-roam-node-display-template</code> as such:
+</p>
+<div class="lisp">
+<pre class="lisp">(setq org-roam-node-display-template
+      (concat &quot;${title:*} &quot;
+              (propertize &quot;${tags:10}&quot; 'face 'org-tag)))
+</pre></div>
+
 <hr>
 <span id="Customizing-Node-Caching"></span><div class="header">
 <p>
@@ -960,6 +1026,39 @@ all headlines with the <code>ATTACH</code> tag from the Org-roam database, one c
       (lambda ()
         (not (member &quot;ATTACH&quot; (org-get-tags)))))
 </pre></div>
+
+<p>Org-roam relied on the obtained Org AST for the buffer to parse links. However,
+links appearing in some places (e.g. within property drawers) are not considered
+by the Org AST to be links. Therefore, Org-roam takes special care of
+additionally trying to process these links. Use
+<code>org-roam-db-extra-links-elements</code> to specify which additional Org AST element
+types to consider.
+</p>
+<dl>
+<dt id="index-org_002droam_002ddb_002dextra_002dlinks_002delements">Variable: <strong>org-roam-db-extra-links-elements</strong></dt>
+<dd>
+<p>The list of Org element types to include for parsing by Org-roam.
+</p>
+<p>By default, when parsing Org&rsquo;s AST, links within keywords and
+property drawers are not parsed as links. Sometimes however, it
+is desirable to parse and cache these links (e.g. hiding links in
+a property drawer).
+</p></dd></dl>
+
+<p>Additionally, one may want to ignore certain keys from being excluded within
+property drawers. For example, we would not want <code>ROAM_REFS</code> links to be
+self-referential. Hence, to exclude specific keys, we use
+<code>org-roam-db-extra-links-exclude-keys</code>.
+</p>
+<dl>
+<dt id="index-org_002droam_002ddb_002dextra_002dlinks_002dexclude_002dkeys">Variable: <strong>org-roam-db-extra-links-exclude-keys</strong></dt>
+<dd>
+<p>Keys to ignore when mapping over links.
+</p>
+<p>The car of the association list is the Org element type (e.g. keyword). The
+cdr is a list of case-insensitive strings to exclude from being treated as
+links.
+</p></dd></dl>
 
 <hr>
 <span id="When-to-cache"></span><div class="header">
@@ -1287,7 +1386,7 @@ Next: <a href="#Completion" accesskey="n" rel="next">Completion</a>, Previous: <
 
 <p>Since version 9.5, Org has first-class support for citations. Org-roam supports
 the caching of both these in-built citations (of form <code>[cite:@key]</code>) and <a href="https://github.com/jkitchin/org-ref">org-ref</a>
-citations (of form <a href="key">key</a>).
+citations (of form cite:key).
 </p>
 <p>Org-roam attempts to load both the <code>org-ref</code> and <code>org-cite</code> package when
 indexing files, so no further setup from the user is required for citation
@@ -2317,6 +2416,8 @@ Next: <a href="#Developer_0027s-Guide-to-Org_002droam" accesskey="n" rel="next">
 </td></tr>
 <tr><td align="left" valign="top">&bull; <a href="#How-do-I-publish-my-notes-with-an-Internet_002dfriendly-graph_003f" accesskey="6">How do I publish my notes with an Internet-friendly graph?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
 </td></tr>
+<tr><td align="left" valign="top">&bull; <a href="#I_0027m-seeing-this-_0060_0060Selecting-deleted-buffer_0027_0027-error-What-do-I-do_003f" accesskey="7">I&rsquo;m seeing this &ldquo;Selecting deleted buffer&rdquo; error. What do I do?</a></td><td>&nbsp;&nbsp;</td><td align="left" valign="top">
+</td></tr>
 </table>
 
 <hr>
@@ -2439,7 +2540,7 @@ and the <code>ROAM_TAGS</code> property for headline nodes
 <hr>
 <span id="How-do-I-publish-my-notes-with-an-Internet_002dfriendly-graph_003f"></span><div class="header">
 <p>
-Previous: <a href="#How-to-migrate-from-Org_002droam-v1_003f" accesskey="p" rel="prev">How to migrate from Org-roam v1?</a>, Up: <a href="#FAQ" accesskey="u" rel="up">FAQ</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
+Next: <a href="#I_0027m-seeing-this-_0060_0060Selecting-deleted-buffer_0027_0027-error-What-do-I-do_003f" accesskey="n" rel="next">I'm seeing this ``Selecting deleted buffer'' error What do I do?</a>, Previous: <a href="#How-to-migrate-from-Org_002droam-v1_003f" accesskey="p" rel="prev">How to migrate from Org-roam v1?</a>, Up: <a href="#FAQ" accesskey="u" rel="up">FAQ</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
 </div>
 <span id="How-do-I-publish-my-notes-with-an-Internet_002dfriendly-graph_003f-1"></span><h3 class="section">18.6 How do I publish my notes with an Internet-friendly graph?</h3>
 
@@ -2551,6 +2652,29 @@ to the publishing directory.  Example code follows:
                                        (kill-buffer (file-name-nondirectory svg))
                                        (setq my-publish-time 0)))))
 </pre></div>
+
+<hr>
+<span id="I_0027m-seeing-this-_0060_0060Selecting-deleted-buffer_0027_0027-error-What-do-I-do_003f"></span><div class="header">
+<p>
+Previous: <a href="#How-do-I-publish-my-notes-with-an-Internet_002dfriendly-graph_003f" accesskey="p" rel="prev">How do I publish my notes with an Internet-friendly graph?</a>, Up: <a href="#FAQ" accesskey="u" rel="up">FAQ</a> &nbsp; [<a href="#Keystroke-Index" title="Index" rel="index">Index</a>]</p>
+</div>
+<span id="I_0027m-seeing-this-_0060_0060Selecting-deleted-buffer_0027_0027-error_002e-What-do-I-do_003f"></span><h3 class="section">18.7 I&rsquo;m seeing this &ldquo;Selecting deleted buffer&rdquo; error. What do I do?</h3>
+
+<p>The &ldquo;selecting deleted buffer&rdquo; error usually occurs when you don&rsquo;t have a
+working <code>emacsql-sqlite</code> executable. Org-roam relies on this executable to
+function properly, and doesn&rsquo;t catch this error. This issue is most commonly
+seen on Windows setups. You can browse through the various GitHub issues posted
+about this <a href="https://github.com/org-roam/org-roam/issues?q=is%3Aissue+selecting+deleted">here</a>.
+</p>
+<p>To fix this, you can try the following:
+</p>
+<ul>
+<li> If on Windows, try replacing your system binary with <a href="https://github.com/nobiot/emacsql-sqlite.exe">this one</a> that has been proven
+to work
+
+</li><li> Use the <code>emacsql-sqlite3</code> option rather than compiling your own emacsql
+binary (see <a href="#How-to-cache">How to cache</a>).
+</li></ul>
 
 <hr>
 <span id="Developer_0027s-Guide-to-Org_002droam"></span><div class="header">
@@ -2882,6 +3006,8 @@ Previous: <a href="#Function-Index" accesskey="p" rel="prev">Function Index</a>,
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dcompletion_002deverywhere"><code>org-roam-completion-everywhere</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Completing-anywhere">Completing anywhere</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002dcapture_002dtemplates"><code><code>org-roam-dailies-capture-templates</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Configuration">Configuration</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002ddailies_002ddirectory"><code><code>org-roam-dailies-directory</code></code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Configuration">Configuration</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dextra_002dlinks_002delements"><code>org-roam-db-extra-links-elements</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#What-to-cache">What to cache</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dextra_002dlinks_002dexclude_002dkeys"><code>org-roam-db-extra-links-exclude-keys</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#What-to-cache">What to cache</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002ddb_002dupdate_002don_002dsave"><code>org-roam-db-update-on-save</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#When-to-cache">When to cache</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dedge_002dextra_002dconfig"><code>org-roam-graph-edge-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dexecutable"><code>org-roam-graph-executable</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graphing">Graphing</a></td></tr>
@@ -2889,6 +3015,7 @@ Previous: <a href="#Function-Index" accesskey="p" rel="prev">Function Index</a>,
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dfiletype"><code>org-roam-graph-filetype</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dnode_002dextra_002dconfig"><code>org-roam-graph-node-extra-config</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graph-Options">Graph Options</a></td></tr>
 <tr><td></td><td valign="top"><a href="#index-org_002droam_002dgraph_002dviewer"><code>org-roam-graph-viewer</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Graphing">Graphing</a></td></tr>
+<tr><td></td><td valign="top"><a href="#index-org_002droam_002dnode_002ddisplay_002dtemplate"><code>org-roam-node-display-template</code></a>:</td><td>&nbsp;</td><td valign="top"><a href="#Customizing-Node-Completions">Customizing Node Completions</a></td></tr>
 <tr><td colspan="4"> <hr></td></tr>
 </table>
 <table><tr><th valign="top">Jump to: &nbsp; </th><td><a class="summary-letter" href="#Variable-Index_vr_letter-O"><b>O</b></a>

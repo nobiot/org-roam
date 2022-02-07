@@ -1,20 +1,20 @@
 #+title: Org-roam User Manual
 #+author: Jethro Kuan
 #+email: jethrokuan95@gmail.com
-#+date: 2020-2021
+#+date: 2020-2022
 #+language: en
 
 #+texinfo_deffn: t
 #+texinfo_dir_category: Emacs
 #+texinfo_dir_title: Org-roam: (org-roam).
 #+texinfo_dir_desc: Roam Research for Emacs.
-#+subtitle: for version 2.1.0
+#+subtitle: for version 2.2.0
 
 #+options: H:4 num:3 toc:nil creator:t ':t
 #+property: header-args :eval never
 #+texinfo: @noindent
 
-This manual is for Org-roam version 2.1.0.
+This manual is for Org-roam version 2.2.0.
 
 #+BEGIN_QUOTE
 Copyright (C) 2020-2021 Jethro Kuan <jethrokuan95@gmail.com>
@@ -369,7 +369,12 @@ For this tutorial, create an empty directory, and set ~org-roam-directory~:
 #+END_SRC
 
 The ~file-truename~ function is only necessary when you use symbolic links
-inside ~org-roam-directory~: Org-roam does not resolve symbolic links.
+inside ~org-roam-directory~: Org-roam does not resolve symbolic links. One can
+however instruct Emacs to always resolve symlinks, at a performance cost:
+
+#+begin_src emacs-lisp
+  (setq find-file-visit-truename t)
+#+end_src
 
 Next, we setup Org-roam to run functions on file changes to maintain cache
 consistency. This is achieved by running ~M-x org-roam-db-autosync-mode~. To
@@ -413,8 +418,59 @@ brought through the node creation process.
 One can also conveniently insert links via the completion-at-point functions
 Org-roam provides (see [[*Completion][Completion]]).
 
+** Customizing Node Completions
+
+Node selection is achieved via the ~completing-read~ interface, typically
+through `org-roam-node-read`. The presentation of these nodes are governed by
+~org-roam-node-display-template~.
+
+- Variable: org-roam-node-display-template
+
+  Configures display formatting for Org-roam node.
+
+  Patterns of form "${field-name:length}" are interpolated based
+  on the current node.
+
+  Each "field-name" is replaced with the return value of each
+  corresponding accessor function for org-roam-node, e.g.
+  "${title}" will be interpolated by the result of
+  org-roam-node-title. You can also define custom accessors using
+  cl-defmethod. For example, you can define:
+
+    (cl-defmethod org-roam-node-my-title ((node org-roam-node))
+      (concat "My " (org-roam-node-title node)))
+
+  and then reference it here or in the capture templates as
+  "${my-title}".
+
+  "length" is an optional specifier and declares how many
+  characters can be used to display the value of the corresponding
+  field. If it's not specified, the field will be inserted as is,
+  i.e. it won't be aligned nor trimmed. If it's an integer, the
+  field will be aligned accordingly and all the exceeding
+  characters will be trimmed out. If it's "*", the field will use
+  as many characters as possible and will be aligned accordingly.
+
+  A closure can also be assigned to this variable in which case the
+  closure is evaluated and the return value is used as the
+  template. The closure must evaluate to a valid template string.
+
+If you're using a vertical completion framework, such as Ivy and Selectrum,
+Org-roam supports the generation of an aligned, tabular completion interface.
+For example, to include a column for tags up to 10 character widths wide, one
+can set ~org-roam-node-display-template~ as such:
+
+#+begin_src emacs-lisp
+  (setq org-roam-node-display-template
+        (concat "${title:*} "
+                (propertize "${tags:10}" 'face 'org-tag)))
+#+end_src
+
 * Customizing Node Caching
 ** How to cache
+:PROPERTIES:
+:ID:       280bfca8-83f3-4371-bc3a-25478d25129c
+:END:
 
 Org-roam uses a sqlite database to perform caching, but there are multiple Emacs
 libraries that can be used. The default used by Org-roam is ~emacs-sqlite~.
@@ -484,6 +540,35 @@ all headlines with the ~ATTACH~ tag from the Org-roam database, one can set:
       (lambda ()
         (not (member "ATTACH" (org-get-tags)))))
 #+end_src
+
+Org-roam relied on the obtained Org AST for the buffer to parse links. However,
+links appearing in some places (e.g. within property drawers) are not considered
+by the Org AST to be links. Therefore, Org-roam takes special care of
+additionally trying to process these links. Use
+~org-roam-db-extra-links-elements~ to specify which additional Org AST element
+types to consider.
+
+- Variable: org-roam-db-extra-links-elements
+
+  The list of Org element types to include for parsing by Org-roam.
+
+  By default, when parsing Org's AST, links within keywords and
+  property drawers are not parsed as links. Sometimes however, it
+  is desirable to parse and cache these links (e.g. hiding links in
+  a property drawer).
+
+Additionally, one may want to ignore certain keys from being excluded within
+property drawers. For example, we would not want ~ROAM_REFS~ links to be
+self-referential. Hence, to exclude specific keys, we use
+~org-roam-db-extra-links-exclude-keys~.
+
+- Variable: org-roam-db-extra-links-exclude-keys
+
+  Keys to ignore when mapping over links.
+
+  The car of the association list is the Org element type (e.g. keyword). The
+  cdr is a list of case-insensitive strings to exclude from being treated as
+  links.
 
 ** When to cache
 
@@ -1536,6 +1621,20 @@ to the publishing directory.  Example code follows:
                                          (kill-buffer (file-name-nondirectory svg))
                                          (setq my-publish-time 0)))))
 #+end_src
+** I'm seeing this "Selecting deleted buffer" error. What do I do?
+
+The "selecting deleted buffer" error usually occurs when you don't have a
+working ~emacsql-sqlite~ executable. Org-roam relies on this executable to
+function properly, and doesn't catch this error. This issue is most commonly
+seen on Windows setups. You can browse through the various GitHub issues posted
+about this [[https://github.com/org-roam/org-roam/issues?q=is%3Aissue+selecting+deleted][here]].
+
+To fix this, you can try the following:
+
+1. If on Windows, try replacing your system binary with [[https://github.com/nobiot/emacsql-sqlite.exe][this one]] that has been proven
+   to work
+2. Use the ~emacsql-sqlite3~ option rather than compiling your own emacsql
+   binary (see [[id:280bfca8-83f3-4371-bc3a-25478d25129c][How to cache]]).
 
 * Developer's Guide to Org-roam
 ** Org-roam's Design Principle

@@ -31,7 +31,7 @@ General Public License for more details.
 @finalout
 @titlepage
 @title Org-roam User Manual
-@subtitle for version 2.1.0
+@subtitle for version 2.2.0
 @author Jethro Kuan
 @page
 @vskip 0pt plus 1filll
@@ -44,7 +44,7 @@ General Public License for more details.
 
 @noindent
 
-This manual is for Org-roam version 2.1.0.
+This manual is for Org-roam version 2.2.0.
 
 @quotation
 Copyright (C) 2020-2021 Jethro Kuan <jethrokuan95@@gmail.com>
@@ -110,6 +110,7 @@ Getting Started
 * Links between Nodes::
 * Setting up Org-roam::
 * Creating and Linking Nodes::
+* Customizing Node Completions::
 
 Customizing Node Caching
 
@@ -194,6 +195,7 @@ FAQ
 * How do I migrate from Roam Research?::
 * How to migrate from Org-roam v1?::
 * How do I publish my notes with an Internet-friendly graph?::
+* I'm seeing this ``Selecting deleted buffer'' error. What do I do?: I'm seeing this ``Selecting deleted buffer'' error What do I do?. 
 
 How do I publish my notes with an Internet-friendly graph?
 
@@ -586,6 +588,7 @@ your Emacs configuration folder like this:
 * Links between Nodes::
 * Setting up Org-roam::
 * Creating and Linking Nodes::
+* Customizing Node Completions::
 @end menu
 
 @node The Org-roam Node
@@ -652,7 +655,12 @@ For this tutorial, create an empty directory, and set @code{org-roam-directory}:
 @end lisp
 
 The @code{file-truename} function is only necessary when you use symbolic links
-inside @code{org-roam-directory}: Org-roam does not resolve symbolic links.
+inside @code{org-roam-directory}: Org-roam does not resolve symbolic links. One can
+however instruct Emacs to always resolve symlinks, at a performance cost:
+
+@lisp
+(setq find-file-visit-truename t)
+@end lisp
 
 Next, we setup Org-roam to run functions on file changes to maintain cache
 consistency. This is achieved by running @code{M-x org-roam-db-autosync-mode}. To
@@ -703,6 +711,56 @@ brought through the node creation process.
 
 One can also conveniently insert links via the completion-at-point functions
 Org-roam provides (see @ref{Completion}).
+
+@node Customizing Node Completions
+@section Customizing Node Completions
+
+Node selection is achieved via the @code{completing-read} interface, typically
+through `org-roam-node-read`. The presentation of these nodes are governed by
+@code{org-roam-node-display-template}.
+
+@defvar org-roam-node-display-template
+
+Configures display formatting for Org-roam node.
+
+Patterns of form ``$@{field-name:length@}'' are interpolated based
+on the current node.
+
+Each ``field-name'' is replaced with the return value of each
+corresponding accessor function for org-roam-node, e.g.
+``$@{title@}'' will be interpolated by the result of
+org-roam-node-title. You can also define custom accessors using
+cl-defmethod. For example, you can define:
+
+(cl-defmethod org-roam-node-my-title ((node org-roam-node))
+  (concat ``My '' (org-roam-node-title node)))
+
+and then reference it here or in the capture templates as
+``$@{my-title@}''.
+
+``length'' is an optional specifier and declares how many
+characters can be used to display the value of the corresponding
+field. If it's not specified, the field will be inserted as is,
+i.e. it won't be aligned nor trimmed. If it's an integer, the
+field will be aligned accordingly and all the exceeding
+characters will be trimmed out. If it's ``*'', the field will use
+as many characters as possible and will be aligned accordingly.
+
+A closure can also be assigned to this variable in which case the
+closure is evaluated and the return value is used as the
+template. The closure must evaluate to a valid template string.
+@end defvar
+
+If you're using a vertical completion framework, such as Ivy and Selectrum,
+Org-roam supports the generation of an aligned, tabular completion interface.
+For example, to include a column for tags up to 10 character widths wide, one
+can set @code{org-roam-node-display-template} as such:
+
+@lisp
+(setq org-roam-node-display-template
+      (concat "$@{title:*@} "
+              (propertize "$@{tags:10@}" 'face 'org-tag)))
+@end lisp
 
 @node Customizing Node Caching
 @chapter Customizing Node Caching
@@ -785,6 +843,37 @@ all headlines with the @code{ATTACH} tag from the Org-roam database, one can set
       (lambda ()
         (not (member "ATTACH" (org-get-tags)))))
 @end example
+
+Org-roam relied on the obtained Org AST for the buffer to parse links. However,
+links appearing in some places (e.g. within property drawers) are not considered
+by the Org AST to be links. Therefore, Org-roam takes special care of
+additionally trying to process these links. Use
+@code{org-roam-db-extra-links-elements} to specify which additional Org AST element
+types to consider.
+
+@defvar org-roam-db-extra-links-elements
+
+The list of Org element types to include for parsing by Org-roam.
+
+By default, when parsing Org's AST, links within keywords and
+property drawers are not parsed as links. Sometimes however, it
+is desirable to parse and cache these links (e.g. hiding links in
+a property drawer).
+@end defvar
+
+Additionally, one may want to ignore certain keys from being excluded within
+property drawers. For example, we would not want @code{ROAM_REFS} links to be
+self-referential. Hence, to exclude specific keys, we use
+@code{org-roam-db-extra-links-exclude-keys}.
+
+@defvar org-roam-db-extra-links-exclude-keys
+
+Keys to ignore when mapping over links.
+
+The car of the association list is the Org element type (e.g. keyword). The
+cdr is a list of case-insensitive strings to exclude from being treated as
+links.
+@end defvar
 
 @node When to cache
 @section When to cache
@@ -1066,7 +1155,7 @@ Remove a ref from the node at point.
 
 Since version 9.5, Org has first-class support for citations. Org-roam supports
 the caching of both these in-built citations (of form @code{[cite:@@key]}) and @uref{https://github.com/jkitchin/org-ref, org-ref}
-citations (of form @uref{key}).
+citations (of form cite:key).
 
 Org-roam attempts to load both the @code{org-ref} and @code{org-cite} package when
 indexing files, so no further setup from the user is required for citation
@@ -1935,6 +2024,7 @@ Org-mode, and sync your cards to Anki via @uref{https://github.com/FooSoft/anki-
 * How do I migrate from Roam Research?::
 * How to migrate from Org-roam v1?::
 * How do I publish my notes with an Internet-friendly graph?::
+* I'm seeing this ``Selecting deleted buffer'' error. What do I do?: I'm seeing this ``Selecting deleted buffer'' error What do I do?. 
 @end menu
 
 @node How do I have more than one Org-roam directory?
@@ -2144,6 +2234,27 @@ to the publishing directory.  Example code follows:
                                        (kill-buffer (file-name-nondirectory svg))
                                        (setq my-publish-time 0)))))
 @end lisp
+
+@node I'm seeing this ``Selecting deleted buffer'' error What do I do?
+@section I'm seeing this ``Selecting deleted buffer'' error. What do I do?
+
+The ``selecting deleted buffer'' error usually occurs when you don't have a
+working @code{emacsql-sqlite} executable. Org-roam relies on this executable to
+function properly, and doesn't catch this error. This issue is most commonly
+seen on Windows setups. You can browse through the various GitHub issues posted
+about this @uref{https://github.com/org-roam/org-roam/issues?q=is%3Aissue+selecting+deleted, here}.
+
+To fix this, you can try the following:
+
+@itemize
+@item
+If on Windows, try replacing your system binary with @uref{https://github.com/nobiot/emacsql-sqlite.exe, this one} that has been proven
+to work
+
+@item
+Use the @code{emacsql-sqlite3} option rather than compiling your own emacsql
+binary (see @ref{How to cache}).
+@end itemize
 
 @node Developer's Guide to Org-roam
 @chapter Developer's Guide to Org-roam
